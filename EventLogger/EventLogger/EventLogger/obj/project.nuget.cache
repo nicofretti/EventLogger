@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "aW5wJqqPpN6S98OrQKLuS6wl1RwW2qqAXQHSaDotdMtiln5xowi3ZyM9aoPYht1kzPfPl7oZxZruxoYIn/YmnQ==",
+  "dgSpecHash": "nu0Dv9CurjNQXO6oQzhjkNThKBcTObKhLgc07FKkTDnZqo+JRTmWY18B54NUaXJpa8pIvME+DIBu3SCrlk7b3A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\nicof\\Desktop\\PROJECTS\\EventLogger\\EventLogger\\EventLogger\\EventLogger.csproj",
+  "projectFilePath": "C:\\Users\\nicof\\Desktop\\PROJECTS\\logger\\EventLogger\\EventLogger\\EventLogger\\EventLogger.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

