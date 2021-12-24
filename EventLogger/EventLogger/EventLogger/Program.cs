@@ -74,10 +74,9 @@ class EventLogger
             }
             previousTime = DateTime.Now;
         }
-        //else if (wParam == (IntPtr)Utils.WM_RBUTTONDOWN) {
-        //    Console.WriteLine("[Mouse] Right button down");
-        //    Utils.CollectProcess(Process.GetProcesses());
-        //}
+        else if (wParam == (IntPtr)Utils.WM_RBUTTONDOWN) {
+            Console.WriteLine("[Mouse] Right button down");
+        }
         return CallNextHookEx(_mouseHook, nCode, wParam, lParam);
     }
     private static IntPtr KeyBoardHandler(int nCode, IntPtr wParam, IntPtr lParam)
