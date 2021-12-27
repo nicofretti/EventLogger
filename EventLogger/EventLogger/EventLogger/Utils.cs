@@ -11,7 +11,7 @@ public static class Utils
     public const int WM_KEYUP = 0x0101;
     public const int WM_LBUTTONDOWN = 0x0201;
     public const int WM_RBUTTONDOWN = 0x0204;
-    private static String _oldNames = ""; 
+    public const String PATH = @"C:\Users\nicof\Desktop\PROJECTS\logger\log.txt";
     public static String TransformInt(int i) {
         // function that transforms the int and return the string that will be written in the log file
         // the function is called when the user press a key
@@ -62,35 +62,4 @@ public static class Utils
         //}
     }
 
-    public static SortedSet<string> CollectProcess(Process[] processes)
-    {
-        //function that collect names of processes
-        SortedSet<String> names = new SortedSet<string>();
-        foreach (Process p in processes) {
-            if (p.MainWindowTitle.Length>0) {
-                names.Add(p.ProcessName);
-            }
-
-        }
-        CheckSet(names);
-        return names;
-    }
-
-    private static void CheckSet(SortedSet<String> names)
-    {
-        // function that check if the new set of processes is different from the old one
-        // if it is different, the old one is written in the log file
-        String s = "";
-        foreach (String p in names)
-        {
-            s += p;
-        }
-        if (s != _oldNames)
-        {
-            // do something
-            Console.WriteLine("new processes");
-        }
-        _oldNames = s;
-    }
-    
 }
