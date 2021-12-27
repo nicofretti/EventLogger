@@ -50,7 +50,58 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
 # Common IntelliJ Platform excludes
+*.suo
+*.user
+.vs/
+[Bb]in/
+[Oo]bj/
+_UpgradeReport_Files/
+[Pp]ackages/
+
+Thumbs.db
+Desktop.ini
+
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__
+db.sqlite3
+media
+
+# Backup files # 
+*.bak 
+
+# Python # 
+*.py[cod] 
+*$py.class 
+
+
+# pyenv 
+.python-version 
+
+
+# Enviroment
+**/env/
+
+# If you are using PyCharm
+**/.idea/**/workspace.xml
+**/.idea/**/tasks.xml
+**/.idea/**/usage.statistics.xml
+**/.idea/**/dictionaries
+**/.idea/**/shelf
+**/.idea/**/contentModel.xml
+
+# Sensitive or high-churn files
+**/.idea/**/dataSources/
+**/.idea/**/dataSources.ids
+**/.idea/**/dataSources.local.xml
+**/.idea/**/sqlDataSources.xml
+**/.idea/**/dynamic.xml
+**/.idea/**/uiDesigner.xml
+**/.idea/**/dbnavigator.xml
 
 # User specific
 **/.idea/**/workspace.xml
@@ -68,18 +119,7 @@ dkms.conf
 **/.idea/**/dynamic.xml
 
 # Rider
-# Rider auto-generates .iml files, and contentModel.xml
 **/.idea/**/*.iml
 **/.idea/**/contentModel.xml
 **/.idea/**/modules.xml
 
-*.suo
-*.user
-.vs/
-[Bb]in/
-[Oo]bj/
-_UpgradeReport_Files/
-[Pp]ackages/
-
-Thumbs.db
-Desktop.ini
