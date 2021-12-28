@@ -3,13 +3,15 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<h1>Log In</h1>
-<div>
-    <form method="post">
-      {% csrf_token %}
-        <input type="text" name="username"/>
-        <input type="password" name="password"/>
-      <button type="submit">Log In</button>
-    </form>
-</div>
+    <div class="flex justify-center mt-24">
+        <div class="flex flex-col justify-center max-w-md bg-gray-50 rounded-xl p-6" >
+            <h1 class="text-center text-2xl">EventLogger</h1>
+            <form method="post" class="flex flex-col justify-center space-y-4">
+              {% csrf_token %}
+                <input class="rounded" type="text" name="username"/>
+                <input class="rounded" type="password" name="password"/>
+              <button class="bg-blue-200 rounded p-1" type="submit">Log In</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}

@@ -1,11 +1,13 @@
 <html>
+{% load tailwind_tags %}
 <head>
-  <meta charset="utf-8">
+    <meta charset="utf-8">
+    {% tailwind_css %}
 </head>
-<body>
-  <main>
-    {% block content %}
-    {% endblock %}
-  </main>
+<body class="bg-gray-900">
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
 </body>
 </html>
