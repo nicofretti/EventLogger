@@ -3,24 +3,35 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-    <div class="flex justify-center mt-24">
+    {% if error %}
+        <div class="flex justify-between border border-red-400 text-red-700 rounded p-2" role="alert">
+            <div>
+                <strong class="font-bold">Error: </strong>
+                <span class="block sm:inline">{{ error }}</span>
+            </div>
+            <!--Icon that redirect the page to login-->
+            <a class="material-icons" href="/login">close</a>
+        </div>
+    {% endif %}
+    <div class="flex justify-center mt-10">
         <div class="flex flex-col justify-center max-w-md rounded-xl px-8 bg-th-card">
-            <h1 class="text-center text-3xl text-th-text font-bold mt-8 mb-4">
+            <h1 class="text-center text-3xl text-white font-bold mt-8 mb-4">
                 <span class="text-th-primary">E</span>ventLogge<span class="text-th-primary">r</span>
             </h1>
+
             <form method="post" class="flex flex-col justify-center w-72">
                 {% csrf_token %}
                 <div>
-                    <p class="text-th-text">Username:</p>
-                    <input class="rounded w-72 bg-th-label" type="text" name="username"/>
+                    <p class="text-white">Username:</p>
+                    <input class="rounded w-72 bg-white" type="text" name="username"/>
                 </div>
+
                 <div class="mt-4">
-                    <p class="text-th-text">Password:</p>
-                    <input class="rounded w-72 bg-th-label" type="password" name="password"/>
+                    <p class="text-white">Password:</p>
+                    <input class="rounded w-72 bg-white" type="password" name="password"/>
                 </div>
                 <button class="bg-th-primary rounded my-8 h-10" type="submit">Log In</button>
             </form>
-
         </div>
     </div>
 {% endblock %}

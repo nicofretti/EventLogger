@@ -5,16 +5,16 @@ module.exports = {
         '../../**/templates/**/*.html',
     ],
     theme: {
-        colors:{
-            transparent: 'transparent',
-            current: 'currentColor',
-            'th-primary': '#3F90F0',
-            'th-card': '#1C1C1C',
-            'th-background': '#0A090B',
-            'th-text': '#ffffff',
-            'th-label': '#7A7A7A'
+        extend: {
+            colors:{
+                transparent: 'transparent',
+                current: 'currentColor',
+                'th-primary': '#3F90F0',
+                'th-card': '#1C1C1C',
+                'th-background': '#0A090B',
+                'th-label': '#C4C4C4'
+            }
         },
-        extend: {},
     },
     plugins: [
         require('@tailwindcss/forms'),
