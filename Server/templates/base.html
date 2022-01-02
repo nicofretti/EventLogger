@@ -1,8 +1,14 @@
 <html>
 {% load tailwind_tags %}
+{% load static %}
 <head>
     <meta charset="utf-8">
     {% tailwind_css %}
+    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">g
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
 </head>
 <body class="bg-gray-900">
     <main>
