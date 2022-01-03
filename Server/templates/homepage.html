@@ -8,47 +8,46 @@
     <a href="/" class="text-center text-3xl font-bold hover:text-th-primary">
         <span class="text-th-primary">E</span>ventLogge<span class="text-th-primary">r</span>
     </a>
-    <a class="flex justify-center border border-white rounded p-1 hover:bg-th-primary" href="{% url 'logout' %}">
+    <a class="flex justify-center border border-white rounded p-1 hover:bg-red-700" href="{% url 'logout' %}">
         <span class="material-icons">logout</span>
         Logout
     </a>
 </div>
 
-<div class="flex flex-col text-white mt-4 md:px-32">
+<div class="flex flex-col text-white mt-4">
     <!-- Search bar -->
     <form  method="GET">
-        <div class="flex">
+        <div class="flex space-x-4 ">
             <input type="text" name="q" class="border border-white rounded p-1 text-black w-full mr-4" placeholder="Search">
-            <button type="submit" class="material-icons text-white py-1 px-5 border border-white rounded hover:bg-th-primary">search</button>
+            <button type="submit" class="material-icons text-white py-1 px-5 border border-white rounded hover:bg-blue-700">search</button>
+            <button type="submit" class="material-icons text-white py-1 px-2 border border-white rounded hover:bg-green-700">personadd</button>
         </div>
     </form>
-    <!-- Table
-    <div class="flex justify-between text-black rounded bg-th-label font-bold p-1">
-        <div class="flex-1">USERNAME</div>
-        <div class="flex-2">API KEY</div>
-        <div class="flex-1">LAST UPDATE</div>
-        <div class="flex-1">EXPLORE</div>
-    <div>-->
+    <!-- Table -->
     <table class="border-collapse">
         <thead class="font-xl bg-th-label text-black font-bold rounded py-2 mb-5">
             <th class="rounded-l py-2">USERNAME</th>
             <th>API KEY</th>
             <th>LAST UPDATE</th>
-            <th class="rounded-r">APP</th>
+            <th class="rounded-r">ACTIONS</th>
         </thead>
         <tbody class="text-white text-center">
             <tr>
-                <td class="p-1"></td>
                 <td></td>
                 <td></td>
                 <td></td>
+                <td class="p-1">
+                </td>
             </tr>
             <tr>
                 <td class="py-2">USER-1</td>
                 <td>ASDASDJPISAJDSAOIJDDSA</td>
                 <td>19/10/10 12:10:00</td>
                 <td>
-                    <button type="submit" class="material-icons text-white w-8 border border-white rounded hover:bg-th-primary">appsicon</button>
+                    <a class="flex justify-center border border-white rounded hover:bg-th-primary" href="#">
+                        <span class="material-icons">apps</span>
+                        Open
+                    </a>
                 </td>
             </tr>
         </tbody>
