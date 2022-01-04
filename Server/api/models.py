@@ -7,7 +7,7 @@ class LoggerKey(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'user_key'
+        db_table = 'logger_key'
 
 
 class Event(models.Model):
