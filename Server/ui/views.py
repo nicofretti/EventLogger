@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
-
+import api.models as models
 
 def login(request):
     template = "login.html"
@@ -28,4 +28,17 @@ def logout(request):
 
 @login_required(login_url='login/')
 def homepage(request):
-    return render(request, 'homepage.html')
+    loggers = models.LoggerKey.objects.all()
+    for logger in loggers:
+        if(models.Event.objects.filter(logger_key=logger.id).exists()):
+            logger.last_event = models.Event.objects.filter(logger_key=logger.id).latest('timestamp').timestamp
+        else:
+            logger.last_event = "-"
+    return render(request, 'homepage.html', {'loggers': loggers})
+
+def events(request,pk):
+    context = {
+        'events': models.Event.objects.filter(logger_key=pk),
+        'logger': models.LoggerKey.objects.get(id=pk)
+    }
+    return render(request,'events.html', context)

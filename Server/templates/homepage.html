@@ -39,17 +39,21 @@
                 <td class="p-1">
                 </td>
             </tr>
-            <tr>
-                <td class="py-2">USER-1</td>
-                <td>ASDASDJPISAJDSAOIJDDSA</td>
-                <td>19/10/10 12:10:00</td>
+            {% for logger in loggers %}
+               <tr>
+                <td class="py-2">{{ logger.username }}</td>
+                <td>{{ logger.key }}</td>
+                <td>{{ logger.last_event }}</td>
                 <td>
-                    <a class="flex justify-center border border-white rounded hover:bg-th-primary" href="#">
+                    <a class="flex justify-center border border-white rounded hover:bg-th-primary"
+                       href="{% url 'events' logger.id %}">
                         <span class="material-icons">apps</span>
                         Open
                     </a>
                 </td>
             </tr>
+            {% endfor %}
+
         </tbody>
     </table>
 </div>

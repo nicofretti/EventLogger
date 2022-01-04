@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}
+    Events
+{% endblock %}
+
+{% block content %}
+    <div class="flex justify-between items-center border-b border-white text-white pb-2 px-1">
+        <a href="/" class="text-center text-3xl font-bold hover:text-th-primary">
+            <span class="text-th-primary">E</span>ventLogge<span class="text-th-primary">r</span>
+        </a>
+        <a class="flex justify-center border border-white rounded p-1 hover:bg-red-700" href="{% url 'logout' %}">
+            <span class="material-icons">logout</span>
+            Logout
+        </a>
+    </div>
+    <p>Text</p>
+{% endblock %}
