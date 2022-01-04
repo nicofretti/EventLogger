@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 import api.models as models
+import json
 
 def login(request):
     template = "login.html"
@@ -37,8 +38,15 @@ def homepage(request):
     return render(request, 'homepage.html', {'loggers': loggers})
 
 def events(request,pk):
+    events = models.Event.objects.filter(logger_key=pk)
+    custom_events = []
+    for event in events:
+        processes = json.loads(event.processes)
+        print(processes)
+        event.processes = processes
+        custom_events.append(event)
     context = {
-        'events': models.Event.objects.filter(logger_key=pk),
+        'events': custom_events,
         'logger': models.LoggerKey.objects.get(id=pk)
     }
     return render(request,'events.html', context)

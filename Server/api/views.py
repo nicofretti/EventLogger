@@ -19,27 +19,27 @@ def get_processes(raw_data: str):
 
 def translate_key(key: str):
     if key == "RShiftKey" or key == "LShiftKey":
-        return "<kdb>Shift</kdb>"
+        return "<kbd>Shift</kbd>"
     elif key == "RControlKey" or key == "LControlKey":
-        return "<kdb>Ctrl</kdb>"
+        return "<kbd>Ctrl</kbd>"
     elif key == "RMenu" or key == "LMenu":
-        return "<kdb>Alt</kdb>"
+        return "<kbd>Alt</kbd>"
     elif key == "RWin" or key == "LWin":
-        return "<kdb>Win</kdb>"
+        return "<kbd>Win</kbd>"
     elif key == "RAlt" or key == "LAlt":
-        return "<kdb>Alt</kdb>"
+        return "<kbd>Alt</kbd>"
     elif key == "RShift" or key == "LShift":
-        return "<kdb>Shift</kdb>"
+        return "<kbd>Shift</kbd>"
     elif key == "RControl" or key == "LControl":
-        return "<kdb>Ctrl</kdb>"
+        return "<kbd>Ctrl</kbd>"
     elif key == "RMenu" or key == "LMenu":
-        return "<kdb>Alt</kdb>"
+        return "<kbd>Alt</kbd>"
     elif key == "Return":
-        return "<kdb>Enter</kdb>"
+        return "<kbd>Enter</kbd>"
     elif key == "Escape":
-        return "<kdb>Esc</kdb>"
+        return "<kbd>Esc</kbd>"
     elif key == "Oemplus":
-        return "<kdb>+</kdb>"
+        return "<kbd>+</kbd>"
     return "<kbd>{}</kbd>".format(key)
 
 
@@ -75,7 +75,7 @@ def log(request):
         models.Event.objects.create(
             logger_key=key,
             timestamp=timestamp,
-            content=json.dumps(content),
+            content=content,
             processes=json.dumps(processes),
         )
     return HttpResponse(status=200)

@@ -13,5 +13,92 @@
             Logout
         </a>
     </div>
-    <p>Text</p>
+    <div class="grid grid-cols-4 gap-4 mt-4">
+        <div class="flex flex-col bg-th-card rounded text-white space-y-4 p-4">
+            <!-- Action bar -->
+            <a class="flex space-x-1 p-1 border border-th-card rounded
+                hover:bg-yellow-700 hover:border hover:border-yellow-200">
+                <i class="material-icons">keyboard_arrow_left</i>
+                <span>Back</span>
+            </a>
+            <a class="flex space-x-1 p-1 rounded bg-th-primary">
+                <i class="material-icons">event_note</i>
+                <span>Events</span>
+            </a>
+            <a class="flex space-x-1 p-1 border border-th-card rounded
+                hover:bg-yellow-700 hover:border hover:border-yellow-200">
+                <i class="material-icons">insert_chart_outlined</i>
+                <span>Charts</span>
+            </a>
+            <a class="flex space-x-1 p-1 border border-th-card rounded
+                hover:bg-yellow-700 hover:border hover:border-yellow-200">
+                <i class="material-icons">settings_applications</i>
+                <span>Settings</span>
+            </a>
+
+        </div>
+        <div class="col-span-3 flex flex-col justify-start">
+            <!--- Events -->
+            <button class="flex justify-left space-x-1 my-2 mr-auto w-32 text-white border border-white rounded p-1 hover:bg-red-700 max-w-32">
+                <span class="material-icons">filter_list</span>
+                <span>Filter</span>
+            </button>
+            <table class="border-collapse text-white">
+                <thead class="font-xl bg-th-label text-black font-bold rounded py-2 mb-5">
+                    <th class="rounded-l py-2 px-8">TIMESTAMP</th>
+                    <th>DATA</th>
+                </thead>
+                <tbody>
+                {% for event in events %}
+                    <tr>
+                        <td class="text-center">{{ event.timestamp}}</td>
+                        <td class="text-sm py-2">
+                            <div class="inline-block">{{ event.content|safe }}</div>
+                            <button class="flex hover:text-th-primary" onClick="showDetail(1,this)">
+                                <span class="material-icons">keyboard_arrow_down</span>
+                                <span>Show more</span>
+                            </button>
+                            <div id="1" style="display: none" class="text-white">
+                                <ul>
+                                {% for list in event.processes %}
+                                    <li><{{ forloop.counter }}> - {{ list }}</li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // function to show more data that display detail/hide detail of a event
+        function showDetail(id,elem){
+            if(document.getElementById(id).style.display === "none"){
+                document.getElementById(id).style.display = "block";
+                elem.innerHTML = '<span class="material-icons">keyboard_arrow_up</span> <span>Show less</span>';
+            }else{
+                document.getElementById(id).style.display = "none";
+                elem.innerHTML = '<span class="material-icons">keyboard_arrow_down</span> <span>Show more</span>'
+            }
+        }
+    </script>
+    <style>
+    kbd {
+        background-color: #323232;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        color: #dcdcdc;
+        display: inline-block;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 12px;
+        line-height: 10px;
+        padding: 3px 5px;
+        vertical-align: middle;
+    }
+    </style>
+
 {% endblock %}
