@@ -78,6 +78,7 @@ class EventLogger
             {
                 key = "[" + key + "]";
             }
+
             logger.KeyLog(key);
         }
 
@@ -88,10 +89,9 @@ class EventLogger
     {
         try
         {
-            Thread.Sleep(Constants.API_INVOKE);
             while (true)
             {
-                Thread.Sleep(Constants.API_INVOKE);
+                Thread.Sleep(Constants.API_INVOKE * 1000);
                 logger.SendLog();
             }
         }

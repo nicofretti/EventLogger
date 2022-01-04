@@ -10,7 +10,7 @@ public static class Constants
     public const int WM_LBUTTONDOWN = 0x0201;
     public const int WM_RBUTTONDOWN = 0x0204;
     public const int LINE_LENGHT = 10;
-    public const int API_INVOKE = 1000 * 2;
+    public const int API_INVOKE = 10;
     public const String PATH = @"C:\Users\nicof\Desktop\PROJECTS\logger\log.txt";
 
         // optimized on server side
