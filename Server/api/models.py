@@ -13,8 +13,8 @@ class LoggerKey(models.Model):
 class Event(models.Model):
     timestamp = models.DateTimeField()
     logger_key = models.ForeignKey(LoggerKey, models.DO_NOTHING, db_column='logger_key_id')
-    event_type = models.IntegerField(default=0)  # 0 = keyboard only, 1 = keyboard + process
-    content = models.TextField()
+    content = models.TextField(default="")
+    processes = models.TextField(default="")
 
     class Meta:
         managed = True

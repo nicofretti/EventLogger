@@ -14,39 +14,5 @@ public static class Constants
     public const int MAX_LOG_LENGTH = 2048;
     public const bool LOG_PROCESS_ON_DOUBLE_CLICK = true;
     public const String PATH = @"C:\Users\nicof\Desktop\PROJECTS\logger\log.txt";
-
-        // optimized on server side
-        //switch (key)
-        //{
-        //    case "LControlKey":
-        //    case "RControlKey":
-        //        key = "[Ctrl]";
-        //        break;
-        //    case "LShiftKey":
-        //    case "RShiftKey":
-        //        key = "[Shift]";
-        //        break;
-        //    case "LMenu":
-        //    case "RMenu":
-        //        key = "[Alt]";
-        //        break;
-        //    case "LWin":
-        //    case "RWin":
-        //        key = "[Win]";
-        //        break;
-        //    case "Back":
-        //        key = "[Backspace]";
-        //        break;
-        //    case "Return":
-        //        key = "[Enter]";
-        //        break;
-        //    case "Escape":
-        //        key = "[Esc]";
-        //        break;
-        //    default:
-        //        // action key is pressed
-        //        key = "[" + key + "]";
-        //        break;
-        //}
     
 }
