@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Net;
+using System.Text;
 using Microsoft.VisualBasic.CompilerServices;
 
 namespace EventLogger;
@@ -59,7 +61,7 @@ public class Logger
         if (forced || _processes!=newProcesses)
         {
             // if the process has changed, log it
-            _line += "<"+DateTime.Now.ToString("H:mm")+","+newProcesses+">";
+            _line += "<"+DateTime.Now+","+newProcesses+">";
             _strokes++;
         }
         _processes = newProcesses;
@@ -104,6 +106,34 @@ public class Logger
         Console.WriteLine(body);
         // todo send the log to the server
         // if any error occurs, Log(" $ "timestamp+body)
+        HttpResponseMessage response = null;
+        try
+        {
+            using (var client = new HttpClient())
+            {
+                var rBody = "{\"content\":\"" + body + "\",\"key\":\"" + Constants.API_KEY + "\"}";
+                Console.WriteLine(rBody);
+                response = client.PostAsync(
+                    Constants.API_URL,
+                    new StringContent(rBody,
+                        Encoding.UTF8,
+                        "application/json"))
+                    .Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Log sent");              
+                }
+                else
+                {
+                    Console.WriteLine("Error sending log");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        Console.WriteLine(response);
     }
     
 }
