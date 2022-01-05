@@ -46,24 +46,31 @@
             <table class="border-collapse text-white">
                 <thead class="font-xl bg-th-label text-black font-bold rounded py-2 mb-5">
                     <th class="rounded-l py-2 px-8">TIMESTAMP</th>
-                    <th>DATA</th>
+                    <th class="rounded-r">DATA</th>
                 </thead>
                 <tbody>
                 {% for event in events %}
-                    <tr>
+                    <tr class="border-b border-dashed">
                         <td class="text-center">{{ event.timestamp}}</td>
                         <td class="text-sm py-2">
                             <div class="inline-block">{{ event.content|safe }}</div>
-                            <button class="flex hover:text-th-primary" onClick="showDetail(1,this)">
+                            <button class="flex mt-2 hover:text-th-primary" onClick="showDetail({{ event.id }},this)">
                                 <span class="material-icons">keyboard_arrow_down</span>
                                 <span>Show more</span>
                             </button>
-                            <div id="1" style="display: none" class="text-white">
-                                <ul>
-                                {% for list in event.processes %}
-                                    <li><{{ forloop.counter }}> - {{ list }}</li>
+                            <div id="{{ event.id }}" style="display: none" class="text-white">
+                                <table class="text-white">
+                                {% for processes in event.processes %}
+
+                                    <tr>
+                                        <td>
+                                            <span class="processes" style="margin:0!important;">{{ forloop.counter }}</span>
+                                            <span >({{ processes.timestamp }}):</span>
+                                        </td>
+                                        <td>{{ processes.list|safe }}</td>
+                                    </tr>
                                 {% endfor %}
-                                </ul>
+                                </table>
                             </div>
                         </td>
                     </tr>
@@ -86,11 +93,27 @@
         }
     </script>
     <style>
+        .processes{
+            text-transform: capitalize;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            padding: 1px 5px;
+            margin: 0 5px;
+            font-size: 11px;
+
+        }
         .process{
-            background-color: #ff0000;
+            text-transform: capitalize;
         }
         .string{
-            background-color: #00ff00;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            text-transform: lowercase;
+            margin: 0 2px 0;
+            letter-spacing: 2px;
+            font-size: 12px;
+            vertical-align: middle;
+            line-height: 10px;
+
         }
         kbd {
             background-color: #323232;

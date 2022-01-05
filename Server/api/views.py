@@ -4,7 +4,6 @@ from django.views.decorators.csrf import csrf_exempt
 import re
 import datetime
 import api.models as models
-from django.utils import timezone
 
 
 def get_processes(raw_data: str):
@@ -13,7 +12,12 @@ def get_processes(raw_data: str):
     array = []
     processes_list = re.findall(r'<(.*?)>', raw_data)
     for processes in processes_list:
-        array.append(processes.split(','))
+        processes = processes.split(',')
+        proccesses_obj = {
+            'timestamp': processes[0],
+            'list': processes[1::],
+        }
+        array.append(proccesses_obj)
     return array
 
 
@@ -56,7 +60,7 @@ def get_content(raw_data: str):
     data_for_strings = raw_data
     cont = 1
     for processes in processes_list:
-        raw_data = raw_data.replace("<" + processes + ">", "<span class='process'>{}</span>".format(cont),1)
+        raw_data = raw_data.replace("<" + processes + ">", "<span class='processes'>{}</span>".format(cont),1)
         data_for_strings = data_for_strings.replace("<"+processes+">","$")
         cont += 1
     key_to_replace = re.findall(r'\[(.*?)\]', raw_data)
