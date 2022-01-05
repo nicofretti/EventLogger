@@ -1,6 +1,7 @@
 import datetime
 
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
@@ -43,7 +44,17 @@ def homepage(request):
 
 
 def events(request, pk):
-    events = models.Event.objects.filter(logger_key=pk)
+
+    # if request has start and end date filter events
+    context = {}
+    if request.GET.get('start') and request.GET.get('end'):
+        start = request.GET.get('start')
+        end = request.GET.get('end')
+        events = models.Event.objects.filter(logger_key=pk, timestamp__gte=start, timestamp__lte=end)
+        context['start'] = start
+        context['end'] = end
+    else:
+        events = models.Event.objects.filter(logger_key=pk)
     assigned_colors = {}
     custom_events = []
     for event in events:
@@ -51,10 +62,11 @@ def events(request, pk):
         processes_string, assigned_colors = get_processes_to_string(processes, assigned_colors)
         event.processes = processes_string
         custom_events.append(event)
-    context = {
-        'events': custom_events,
-        'logger': models.LoggerKey.objects.get(id=pk)
-    }
+    paginator = Paginator(custom_events, 15)
+    page = request.GET.get('page')
+    context['page_obj'] = paginator.get_page(page)
+    context['logger'] = models.LoggerKey.objects.get(id=pk)
+
     return render(request, 'events.html', context)
 
 

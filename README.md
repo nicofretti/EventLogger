@@ -5,14 +5,17 @@ to make a prototype of `keylogger` that can also log some information that can b
 track user's events.
 
 TODO:
-
 - [x] Keyboard events
 - [x] Mouse events
 - [x] Process events
-- [ ] Log events
-- [ ] Server setup
-- [ ] Server communication
-- [ ] Server interface
+- [x] File log
+- [x] Server setup
+- [x] Server api
+- [x] UI authentication
+- [x] UI events
+- [ ] UI charts
+- [ ] UI loggers
+- [ ] Dynamic settings
 - [ ] Other stuff... 
 
 #### Disclaimer

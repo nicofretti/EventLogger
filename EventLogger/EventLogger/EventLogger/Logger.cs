@@ -69,7 +69,7 @@ public class Logger
     
     private void Log()
     {
-        // method that logs the current line
+        // method that logs the current line asd as sda a sda sd
         if(_deleting) return;
         using (StreamWriter w = File.AppendText(Constants.PATH))
         {
