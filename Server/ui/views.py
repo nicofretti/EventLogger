@@ -55,6 +55,11 @@ def events(request, pk):
         context['end'] = end
     else:
         events = models.Event.objects.filter(logger_key=pk)
+
+    if request.GET.get('q'):
+        q = request.GET.get('q')
+        events = events.filter(content__contains=request.GET.get('q'))
+        context['q'] = q
     assigned_colors = {}
     custom_events = []
     for event in events:

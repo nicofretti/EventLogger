@@ -58,21 +58,22 @@ def get_content(raw_data: str):
     # format: string that contains all events logged "asdasdasd<process_name,...>[key]..."
     # return string where all key are replaced with value
     processes_list = re.findall(r'<(.*?)>', raw_data)
-    data_for_strings = raw_data
+    # data_for_strings = raw_data
     cont = 1
     for processes in processes_list:
         raw_data = raw_data.replace("<" + processes + ">", "<span class='processes'>{}</span>".format(cont), 1)
-        data_for_strings = data_for_strings.replace("<" + processes + ">", "$")
+        # data_for_strings = data_for_strings.replace("<" + processes + ">", "$")
         cont += 1
     key_to_replace = re.findall(r'\[(.*?)\]', raw_data)
     for key in key_to_replace:
         raw_data = raw_data.replace("[" + key + "]", translate_key(key), 1)
-        data_for_strings = data_for_strings.replace("[" + key + "]", "$")
-    strings = re.findall(r'([A-Za-z0-9]+)', data_for_strings)
-    sorted(strings,key=len)
-    for string in strings:
-        print(string)
-        raw_data = raw_data.replace(string, "<span class='string'>{}</span>".format(string))
+        # data_for_strings = data_for_strings.replace("[" + key + "]", "$")
+    # strings = re.findall(r'([A-Za-z0-9]+)', data_for_strings)
+    # sorted(strings,key=len)
+    # print(strings)
+    # for string in strings:
+    #    raw_data = raw_data.replace(string, "<span class='string'>{}</span>".format(string),1)
+    #    print("{} -> {}".format(string,raw_data))
     return raw_data
 
 

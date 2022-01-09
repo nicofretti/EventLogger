@@ -14,10 +14,10 @@
         </a>
     </div>
     <div class="grid grid-cols-4 gap-4 mt-4">
+        <!-- Action bar -->
         <div class="flex flex-col bg-th-card rounded text-white space-y-4 p-4">
-            <!-- Action bar -->
             <a class="flex space-x-1 p-1 border border-th-card rounded
-                hover:bg-yellow-700 hover:border hover:border-yellow-200"
+                hover:border hover:border-white"
                 href="{% url 'homepage' %}">
                 <i class="material-icons">keyboard_arrow_left</i>
                 <span>Back</span>
@@ -27,66 +27,93 @@
                 <span>Events</span>
             </a>
             <a class="flex space-x-1 p-1 border border-th-card rounded
-                hover:bg-yellow-700 hover:border hover:border-yellow-200">
+                hover:border hover:border-white">
                 <i class="material-icons">insert_chart_outlined</i>
                 <span>Charts</span>
             </a>
             <a class="flex space-x-1 p-1 border border-th-card rounded
-                hover:bg-yellow-700 hover:border hover:border-yellow-200">
+                hover:border hover:border-white">
                 <i class="material-icons">settings_applications</i>
                 <span>Settings</span>
             </a>
 
         </div>
         <div class="col-span-3 flex flex-col justify-start">
-            <!--- Events -->
-            <button class="flex justify-left space-x-1 my-2 mr-auto w-32 text-white border border-white rounded p-1 hover:bg-red-700 max-w-32"
-                onClick="openModal()">
-                <span class="material-icons">filter_list</span>
-                <span>Filter</span>
-            </button>
-            <table class="border-collapse text-white">
-                <thead class="font-xl bg-th-label text-black font-bold rounded py-2 mb-5">
-                    <th class="rounded-l py-2 px-8">TIMESTAMP</th>
-                    <th class="rounded-r">DATA</th>
-                </thead>
-                <tbody>
-                {% for event in page_obj %}
-                    <tr class="border-b">
-                        <td class="text-center">{{ event.timestamp}}</td>
-                        <td class="text-sm py-2">
-                            <div class="inline-block">{{ event.content|safe }}</div>
-                            <div class="flex flex-col space-y-4 mt-4 rounded bg-th-card p-1">
-                                <button class="flex px-1 border border-white rounded hover:bg-th-primary" onClick="showDetail({{ event.id }},this)">
-                                    <span class="material-icons">keyboard_arrow_down</span>
-                                    <span>Show more</span>
-                                </button>
-                                <div id="{{ event.id }}" style="display: none;margin-left:20px;margin-top:5px" >
-                                    {% for processes in event.processes %}
-                                        <div class="flex justify-start items-center space-y-3">
-                                            <div style="white-space:nowrap;margin-right: 5px">
-                                                <span class="processes" style="margin:0!important">{{ forloop.counter }}</span>
-                                                <span>at {{ processes.timestamp }}:</span>
+            <h2 class="text-3xl text-white text-center font-bold m-0">Events</h2>
+            <!--- Filters -->
+            <div class="flex space-x-1 my-2">
+                <form class="flex space-x-1 w-full m-auto">
+                    <input name="q" type="text" value="{{ q }}" class="rounded p-1 w-full border border-white bg-gray-900 text-white">
+                    <button action="submit" class="flex whitespace-nowrap rounded p-1 text-white border border-white hover:bg-green-700">
+                        <i class="material-icons">search</i>
+                    </button>
+                </form>
+
+                <button onclick="openModal()" class="flex whitespace-nowrap rounded p-1 text-white border border-white hover:bg-yellow-700">
+                    <i class="material-icons">access_time</i>
+                </button>
+            </div>
+            {% if page_obj %}
+                <table class="border-collapse text-white">
+                    <thead class="font-xl bg-gray-400 text-black font-bold rounded py-2 mb-5">
+                        <th class="rounded-l py-2 px-8">TIMESTAMP</th>
+                        <th class="rounded-r">DATA</th>
+                    </thead>
+                    <tbody>
+                    {% for event in page_obj %}
+                        <tr class="border-b">
+                            <td class="text-center">{{ event.timestamp}}</td>
+                            <td class="text-sm py-2">
+                                <div class="string">{{ event.content|safe }}</div>
+                                <div class="flex flex-col space-y-4 mt-4 rounded bg-th-card p-1">
+                                    <button class="flex px-1 border border-white rounded hover:bg-th-primary" onClick="showDetail({{ event.id }},this)">
+                                        <span class="material-icons">keyboard_arrow_down</span>
+                                        <span>Show more</span>
+                                    </button>
+                                    <div id="{{ event.id }}" style="display: none;margin-left:20px;margin-top:5px" >
+                                        {% for processes in event.processes %}
+                                            <div class="flex justify-start items-center space-y-3">
+                                                <div style="white-space:nowrap;margin-right: 5px">
+                                                    <span class="processes" style="margin:0!important">{{ forloop.counter }}</span>
+                                                    <span>at {{ processes.timestamp }}:</span>
+                                                </div>
+                                                <div>
+                                                    <span class="grid grid-rows-2 grid-flow-col-dense">
+                                                        {{ processes.list|safe }}
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <span class="grid grid-rows-2 grid-flow-col-dense">
-                                                    {{ processes.list|safe }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    {% endfor %}
+                                        {% endfor %}
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% block paginator %}
+                    <div class="mt-8 text-white flex justify-center items-center space-x-1">
+                        {% if page_obj.has_previous %}
+                            <a class="material-icons border border-white rounded" href="?page={{ page_obj.previous_page_number }}">chevron_left</a>
+                        {% endif %}
+                        <span class="p-1">
+                           {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        </span>
+                        {% if page_obj.has_next %}
+                            <a class="material-icons border border-white rounded" href="?page={{ page_obj.next_page_number }}">chevron_right</a>
+                        {% endif %}
+                    </div>
+                {% endblock %}
+            {% else %}
+                <div class="text-white text-center mt-8">
+                    <h1>No data found</h1>
+                </div>
+            {% endif %}
+
         </div>
     </div>
 
     <!--- Modal -->
-    <!-- A modal with two datetime input used to filter the events -->
     {% block modal %}
         <div class="modal-container text-white" id="modal">
             <div class="modal bg-th-card p-4 rounded">
@@ -101,34 +128,20 @@
                         <form id="filter">
                             <div class="mt-2">
                                 <label class="block text-sm font-bold">Start</label>
-                                <input value="{{ start }}"class="bg-white text-black rounded p-2" type="datetime-local" name="start" id="start">
+                                <input value="{{ start }}"class="bg-white text-black rounded p-2 w-full" type="datetime-local" name="start" id="start">
                             </div>
                             <div class="mt-2">
                                 <label class="block text-sm font-bold">End</label>
-                                <input value="{{ end }}" class="bg-white text-black rounded p-2" type="datetime-local" name="end" id="end">
+                                <input value="{{ end }}" class="bg-white text-black rounded p-2 w-full" type="datetime-local" name="end" id="end">
                             </div>
                         </form>
                     </div>
                 </section>
-                <footer class="flex justify-center mt-2">
+                <footer class="flex justify-center mt-2 space-x-1">
                     <button class="border border-white rounded p-2 hover:bg-yellow-700" onClick="closeModal()">Close</button>
                     <button class="border border-white rounded p-2 hover:bg-th-primary" onClick="filter()">Filter</button>
                 </footer>
             </div>
-        </div>
-    {% endblock %}
-
-    {% block paginator %}
-        <div class="mt-8 text-white flex justify-center items-center space-x-1">
-            {% if page_obj.has_previous %}
-                <a class="material-icons border border-white rounded" href="?page={{ page_obj.previous_page_number }}">chevron_left</a>
-            {% endif %}
-            <span class="p-1">
-               {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-            </span>
-            {% if page_obj.has_next %}
-                <a class="material-icons border border-white rounded" href="?page={{ page_obj.next_page_number }}">chevron_right</a>
-            {% endif %}
         </div>
     {% endblock %}
 
@@ -170,6 +183,13 @@
                 document.getElementById('filter').submit();
             }
         }
+        function filterTable(elem){
+            if(elem === ""){
+                return;
+            }else{
+                document.location.href = "?q="+elem;
+            }
+        }
     </script>
     <style>
         .modal-container{
@@ -179,11 +199,12 @@
             width: 100%;
             height: 100%;
             display: none;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0,0,0,0.9);
             z-index: 1;
         }
         .modal{
             position: absolute;
+            min-width: 300px;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -192,8 +213,6 @@
             display: inline-block;
             border: 1px solid #ccc;
             border-radius: 3px;
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            font-size: 12px;
             line-height: 10px;
             padding: 3px 5px;
             white-space: nowrap;
@@ -212,24 +231,17 @@
             cursor: default;
         }
         .string{
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             text-transform: lowercase;
-            margin: 0 2px 0;
-            letter-spacing: 2px;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             font-size: 12px;
-            vertical-align: middle;
-            line-height: 10px;
-
         }
         kbd {
+            text-transform: none !important;
             display: inline-block;
             background-color: #323232;
             border: 1px solid #ccc;
             border-radius: 3px;
-            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
             color: #dcdcdc;
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            font-size: 12px;
             line-height: 10px;
             padding: 3px 5px;
             vertical-align: middle;
