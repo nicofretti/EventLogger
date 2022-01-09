@@ -98,4 +98,13 @@ def log(request):
             content=content,
             processes=json.dumps(processes),
         )
+    ### Dynamic settings
+    '''
+    {
+        "SECONDS_API_INVOKE": "",
+        "LOG_PROCESS_ON_DOUBLE_CLICK":"", // to log process on double click otherwise only on api call
+        "LOG_KEYBOARD_EVENTS":"", // to log keyboard events
+        "LOG_MOUSE_EVENTS": "", // to log mouse events
+    }
+    '''
     return HttpResponse(status=200)
