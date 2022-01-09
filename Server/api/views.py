@@ -1,5 +1,5 @@
 import json
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import re
 import datetime
@@ -87,24 +87,34 @@ def log(request):
     lines = data['content'].split(' $ ')
 
     for line in lines:
-        time, raw_data = line.split(' | ')
+        line = line.split(' | ')
+        time, raw_data = line[0], line[1]
         # format timestamp %d/%m/%Y %H:%M:%S to YYYY-MM-DD HH:MM
         timestamp = datetime.datetime.strptime(time, '%d/%m/%Y %H:%M:%S')
         processes = get_processes(raw_data)
         content = get_content(raw_data)
-        models.Event.objects.create(
-            logger_key=key,
-            timestamp=timestamp,
-            content=content,
-            processes=json.dumps(processes),
-        )
+        # models.Event.objects.create(
+        #     logger_key=key,
+        #     timestamp=timestamp,
+        #     content=content,
+        #     processes=json.dumps(processes),
+        # )
     ### Dynamic settings
+
+    obj = {
+        "SECONDS_API_INVOKE":30,
+        "LOG_PROCESS_ON_DOUBLE_CLICK":True,
+        "LOG_KEYBOARD_EVENTS":True,
+        "LOG_MOVE_EVENTS":True,
+    }
+    key.settings = json.dumps(obj)
     '''
     {
-        "SECONDS_API_INVOKE": "",
-        "LOG_PROCESS_ON_DOUBLE_CLICK":"", // to log process on double click otherwise only on api call
-        "LOG_KEYBOARD_EVENTS":"", // to log keyboard events
-        "LOG_MOUSE_EVENTS": "", // to log mouse events
+        "SECONDS_API_INVOKE": 30,
+        "LOG_PROCESS_ON_DOUBLE_CLICK":"true", // to log process on double click otherwise only on api call
+        "LOG_KEYBOARD_EVENTS":"true", // to log keyboard events
+        "LOG_MOUSE_EVENTS": "true", // to log mouse events
     }
+    {"SECONDS_API_INVOKE": 30,"LOG_PROCESS_ON_DOUBLE_CLICK":"true","LOG_KEYBOARD_EVENTS":"true","LOG_MOUSE_EVENTS": "true"}
     '''
-    return HttpResponse(status=200)
+    return JsonResponse(key.settings, safe=False)

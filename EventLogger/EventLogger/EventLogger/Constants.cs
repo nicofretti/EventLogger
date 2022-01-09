@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace EventLogger;
 
@@ -14,19 +16,33 @@ public class Constants
     public const String PATH = @"C:\Users\nicof\Desktop\PROJECTS\logger\log.txt";
     public const String API_URL = "http://localhost:8000/api/logger";
     public const String API_KEY = "1234";
-    public const int COUNT_EVENTS_BEFORE_LOG_ON_FILE = 4096;
-    public int SECONDS_API_INVOKE = 30;
+    public int MAX_CONT_EVENTS = 4098;
+    public int SECONDS_API_INVOKE = 3;
     public bool LOG_PROCESS_ON_DOUBLE_CLICK = true; // to log process on double click otherwise only on api call
     public bool LOG_MOUSE_EVENTS = true;
     public bool LOG_KEYBOARD_EVENTS = true;
+
+    private class SettingsRequest
+    {
+        public int SECONDS_API_INVOKE;
+        public bool LOG_PROCESS_ON_DOUBLE_CLICK;
+        public bool LOG_MOUSE_EVENTS;
+        public bool LOG_KEYBOARD_EVENTS;
+    }
 
     public Constants()
     {
         
     }
 
-    UpdateConfig(String json)
+    public void UpdateConfig(string? json)
     {
+        // convert json to object
+        if (json == null) return;
+        Console.WriteLine(json);
+        SettingsRequest config = JsonConvert.DeserializeObject<SettingsRequest>(json);
+        // update config values using JObject
+        Console.WriteLine(config.SECONDS_API_INVOKE);
         
     }
 
