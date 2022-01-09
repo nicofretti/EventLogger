@@ -45,7 +45,8 @@ public class Logger
             }
             _previousClick = DateTime.Now;
         }
-        if (!_config.LOG_MOUSE_EVENTS) ;
+
+        if (!_config.LOG_MOUSE_EVENTS) return;
         _line += key;
     }
     

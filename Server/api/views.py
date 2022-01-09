@@ -99,15 +99,7 @@ def log(request):
         #     content=content,
         #     processes=json.dumps(processes),
         # )
-    ### Dynamic settings
-
-    obj = {
-        "SECONDS_API_INVOKE":30,
-        "LOG_PROCESS_ON_DOUBLE_CLICK":True,
-        "LOG_KEYBOARD_EVENTS":True,
-        "LOG_MOVE_EVENTS":True,
-    }
-    key.settings = json.dumps(obj)
+    # Dynamic settings
     '''
     {
         "SECONDS_API_INVOKE": 30,
@@ -115,6 +107,7 @@ def log(request):
         "LOG_KEYBOARD_EVENTS":"true", // to log keyboard events
         "LOG_MOUSE_EVENTS": "true", // to log mouse events
     }
-    {"SECONDS_API_INVOKE": 30,"LOG_PROCESS_ON_DOUBLE_CLICK":"true","LOG_KEYBOARD_EVENTS":"true","LOG_MOUSE_EVENTS": "true"}
     '''
-    return JsonResponse(key.settings, safe=False)
+    # from string to python object
+    obj = json.loads(key.settings)
+    return JsonResponse(obj, safe=False)

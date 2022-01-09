@@ -39,10 +39,12 @@ public class Constants
     {
         // convert json to object
         if (json == null) return;
-        Console.WriteLine(json);
         SettingsRequest config = JsonConvert.DeserializeObject<SettingsRequest>(json);
-        // update config values using JObject
-        Console.WriteLine(config.SECONDS_API_INVOKE);
+        if (config == null) return;
+        this.SECONDS_API_INVOKE = config.SECONDS_API_INVOKE;
+        this.LOG_PROCESS_ON_DOUBLE_CLICK = config.LOG_PROCESS_ON_DOUBLE_CLICK;
+        this.LOG_MOUSE_EVENTS = config.LOG_MOUSE_EVENTS;
+        this.LOG_KEYBOARD_EVENTS = config.LOG_KEYBOARD_EVENTS;
         
     }
 
