@@ -75,8 +75,13 @@ def events(request, pk):
     return render(request, 'events.html', context)
 
 def settings(request,pk):
-
-    return render(request, 'settings.html', {'logger': models.LoggerKey.objects.get(id=pk)})
+    logger = models.LoggerKey.objects.get(id=pk)
+    settings = json.loads(logger.settings)
+    context = {
+        'logger': logger,
+        'settings': settings
+    }
+    return render(request, 'settings.html', context)
 # Useful methods
 
 def get_processes_to_string(processes,assigned_colors):

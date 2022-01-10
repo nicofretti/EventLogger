@@ -19,7 +19,7 @@
 {% block content %}
     <div class="grid grid-cols-4 gap-4 mt-4">
         <!-- Action bar -->
-        <div class="flex flex-col bg-th-card rounded text-white space-y-4 p-4">
+        <div class="flex flex-col bg-th-card rounded text-white space-y-4 p-4 min-h-[600px]">
             <a class="flex space-x-1 p-1 border border-th-card rounded
                 hover:border hover:border-white"
                 href="{% url 'homepage' %}">
@@ -45,7 +45,77 @@
         </div>
         <div class="col-span-3 flex flex-col justify-start">
             <h2 class="text-3xl text-white text-center font-bold m-0">Settings</h2>
+            <form class="flex flex-col justify-center items-center mt-4 text-white">
+                {% csrf_token %}
+                <table class="text-white">
 
+                    <thead>
+                        <tr class="mb-4">
+                            <th class="min-w-[300px]"></th>
+                            <th class="w-32"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>LOG_PROCESS_ON_DOUBLE_CLICK</td>
+                            <td>
+                                <select id="LOG_PROCESS_ON_DOUBLE_CLICK"
+                                    name="LOG_PROCESS_ON_DOUBLE_CLICK"
+                                    class="bg-th-card w-full text-white border border-th-card rounded">
+                                    {% if logger.settings.LOG_PROCESS_ON_DOUBLE_CLICK %}
+                                        <option value="True" selected="selected">True</option>
+                                        <option value="False">False</option>
+                                    {% else %}
+                                        <option value="False" selected="selected">False</option>
+                                        <option value="True">True</option>
+                                    {% endif %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>LOG_KEYBOARD_EVENTS</td>
+                            <td>
+                                <select id="LOG_KEYBOARD_EVENTS"
+                                        name="LOG_KEYBOARD_EVENTS"
+                                        class="bg-th-card w-full text-white border border-th-card rounded">
+                                    {% if logger.settings.LOG_KEYBOARD_EVENTS %}
+                                        <option value="True" selected="selected">True</option>
+                                        <option value="False">False</option>
+                                    {% else %}
+                                        <option value="False" selected="selected">False</option>
+                                        <option value="True">True</option>
+                                    {% endif %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>LOG_MOUSE_EVENTS</td>
+                            <td>
+                                <select id="LOG_MOUSE_EVENTS"
+                                    name="LOG_MOUSE_EVENTS"
+                                    class="bg-th-card w-full text-white border border-th-card rounded">
+                                {% if settings.LOG_MOUSE_EVENTS %}
+                                    <option value="True" selected="selected">True</option>
+                                    <option value="False">False</option>
+                                {% else %}
+                                    <option value="False" selected="selected">False</option>
+                                    <option value="True">True</option>
+                                {% endif %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>SECONDS_API_INVOKE</td>
+                            <td>
+                                <input type="number" name="SECONDS_API_INVOKE"
+                                    id="SECONDS_API_INVOKE"
+                                    class="bg-th-card w-full text-white border border-th-card rounded"
+                                    value="{{ settings.SECONDS_API_INVOKE }}">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
         </div>
     </div>
 {% endblock %}
