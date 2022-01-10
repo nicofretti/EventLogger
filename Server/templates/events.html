@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
+
 {% block title %}
     Events
 {% endblock %}
 
-{% block content %}
+{% block header %}
     <div class="flex justify-between items-center border-b border-white text-white pb-2 px-1">
         <a href="/" class="text-center text-3xl font-bold hover:text-th-primary">
             <span class="text-th-primary">E</span>ventLogge<span class="text-th-primary">r</span>
@@ -13,6 +14,9 @@
             Logout
         </a>
     </div>
+{% endblock %}
+
+{% block content %}
     <div class="grid grid-cols-4 gap-4 mt-4">
         <!-- Action bar -->
         <div class="flex flex-col bg-th-card rounded text-white space-y-4 p-4">
@@ -32,11 +36,11 @@
                 <span>Charts</span>
             </a>
             <a class="flex space-x-1 p-1 border border-th-card rounded
-                hover:border hover:border-white">
+                hover:border hover:border-white"
+                href="{% url 'settings' logger.id %}">
                 <i class="material-icons">settings_applications</i>
                 <span>Settings</span>
             </a>
-
         </div>
         <div class="col-span-3 flex flex-col justify-start">
             <h2 class="text-3xl text-white text-center font-bold m-0">Events</h2>

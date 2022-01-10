@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Settings
+{% endblock %}
+
+{% block header %}
+    <div class="flex justify-between items-center border-b border-white text-white pb-2 px-1">
+        <a href="/" class="text-center text-3xl font-bold hover:text-th-primary">
+            <span class="text-th-primary">E</span>ventLogge<span class="text-th-primary">r</span>
+        </a>
+        <a class="flex justify-center border border-white rounded p-1 hover:bg-red-700" href="{% url 'logout' %}">
+            <span class="material-icons">logout</span>
+            Logout
+        </a>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="grid grid-cols-4 gap-4 mt-4">
+        <!-- Action bar -->
+        <div class="flex flex-col bg-th-card rounded text-white space-y-4 p-4">
+            <a class="flex space-x-1 p-1 border border-th-card rounded
+                hover:border hover:border-white"
+                href="{% url 'homepage' %}">
+                <i class="material-icons">keyboard_arrow_left</i>
+                <span>Back</span>
+            </a>
+            <a class="flex space-x-1 p-1 border border-th-card rounded
+                hover:border hover:border-white"
+                href="{% url 'events' logger.id %}">
+                <i class="material-icons">event_note</i>
+                <span>Events</span>
+            </a>
+            <a class="flex space-x-1 p-1 border border-th-card rounded
+                hover:border hover:border-white">
+                <i class="material-icons">insert_chart_outlined</i>
+                <span>Charts</span>
+            </a>
+            <a class="flex space-x-1 p-1 rounded bg-th-primary">
+                <i class="material-icons">settings_applications</i>
+                <span>Settings</span>
+            </a>
+
+        </div>
+        <div class="col-span-3 flex flex-col justify-start">
+            <h2 class="text-3xl text-white text-center font-bold m-0">Settings</h2>
+
+        </div>
+    </div>
+{% endblock %}

@@ -42,7 +42,7 @@ def homepage(request):
             logger.last_event = "-"
     return render(request, 'homepage.html', {'loggers': loggers})
 
-
+@login_required(login_url='login/')
 def events(request, pk):
 
     # if request has start and end date filter events
@@ -74,7 +74,9 @@ def events(request, pk):
 
     return render(request, 'events.html', context)
 
+def settings(request,pk):
 
+    return render(request, 'settings.html', {'logger': models.LoggerKey.objects.get(id=pk)})
 # Useful methods
 
 def get_processes_to_string(processes,assigned_colors):
