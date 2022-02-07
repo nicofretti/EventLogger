@@ -93,12 +93,12 @@ def log(request):
         timestamp = datetime.datetime.strptime(time, '%d/%m/%Y %H:%M:%S')
         processes = get_processes(raw_data)
         content = get_content(raw_data)
-        # models.Event.objects.create(
-        #     logger_key=key,
-        #     timestamp=timestamp,
-        #     content=content,
-        #     processes=json.dumps(processes),
-        # )
+        models.Event.objects.create(
+            logger_key=key,
+            timestamp=timestamp,
+            content=content,
+            processes=json.dumps(processes),
+        )
     # Dynamic settings
     '''
     {

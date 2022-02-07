@@ -31,6 +31,15 @@ def logout(request):
         auth_logout(request)
     return redirect('login')
 
+@login_required(login_url='login/')
+def settings(request, pk):
+    logger = models.LoggerKey.objects.get(id=pk)
+    settings = json.loads(logger.settings)
+    context = {
+        'logger': logger,
+        'settings': settings
+    }
+    return render(request, 'settings.html', context)
 
 @login_required(login_url='login/')
 def homepage(request):
@@ -42,9 +51,9 @@ def homepage(request):
             logger.last_event = "-"
     return render(request, 'homepage.html', {'loggers': loggers})
 
+
 @login_required(login_url='login/')
 def events(request, pk):
-
     # if request has start and end date filter events
     context = {}
     if request.GET.get('start') and request.GET.get('end'):
@@ -74,22 +83,20 @@ def events(request, pk):
 
     return render(request, 'events.html', context)
 
-def settings(request,pk):
+@login_required(login_url='login/')
+def charts(request, pk):
     logger = models.LoggerKey.objects.get(id=pk)
-    settings = json.loads(logger.settings)
-    context = {
-        'logger': logger,
-        'settings': settings
-    }
-    return render(request, 'settings.html', context)
+    print("fuck you")
+    return render(request, 'charts.html', {"logger":logger})
+
 # Useful methods
 
-def get_processes_to_string(processes,assigned_colors):
+def get_processes_to_string(processes, assigned_colors):
     processes_custom = []
     for obj in processes:
         list_processes = ""
         for p in obj['list']:
-            if(p in assigned_colors):
+            if (p in assigned_colors):
                 color = assigned_colors[p]
             else:
                 random.shuffle(rainbow_colors)
@@ -106,6 +113,6 @@ def get_processes_to_string(processes,assigned_colors):
 
 rainbow_colors = [
     '#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#800080', '#808080', '#a52a2a', '#ffc0cb', '#00ffff',
-    '#ff00ff', '#dc143c', '#4b0082', '#00ff00', '#808000', '#008080', '#000080', '#800000', '#c0c0c0', '#00ffff',
-    '#32cd32', '#ffd700', '#fa8072 '
+    '#ff00ff', '#dc143c', '#4b0082', '#00ff00', '#808000', '#008080', '#000080', '#800000', '#c0c0c0', '#32cd32',
+    '#ffd700', '#fa8072 '
 ]

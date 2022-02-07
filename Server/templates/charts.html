@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Charts
+{% endblock %}
+
+{% block header %}
+    <div class="flex justify-between items-center border-b border-white text-white pb-2 px-1">
+        <a href="/" class="text-center text-3xl font-bold hover:text-th-primary">
+            <span class="text-th-primary">E</span>ventLogge<span class="text-th-primary">r</span>
+        </a>
+        <a class="flex justify-center border border-white rounded p-1 hover:bg-red-700" href="{% url 'logout' %}">
+            <span class="material-icons">logout</span>
+            Logout
+        </a>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div onload="loadCharts()" class="grid grid-cols-4 gap-4 mt-4">
+        <!-- Action bar -->
+        <div class="flex flex-col bg-th-card rounded text-white space-y-4 p-4">
+            <a class="flex space-x-1 p-1 border border-th-card rounded
+                hover:border hover:border-white"
+                href="{% url 'homepage' %}">
+                <i class="material-icons">keyboard_arrow_left</i>
+                <span>Back</span>
+            </a>
+            <a class="flex space-x-1 p-1 border border-th-card rounded
+                hover:border hover:border-white"
+                href="{% url 'events' logger.id %}">
+                <i class="material-icons">event_note</i>
+                <span>Events</span>
+            </a>
+            <a class="flex space-x-1 p-1 rounded bg-th-primary">
+                <i class="material-icons">insert_chart_outlined</i>
+                <span>Charts</span>
+            </a>
+            <a class="flex space-x-1 p-1 border border-th-card rounded
+                hover:border hover:border-white"
+                href="{% url 'settings' logger.id %}">
+                <i class="material-icons">settings_applications</i>
+                <span>Settings</span>
+            </a>
+        </div>
+        <div class="col-span-3 flex flex-col justify-start">
+            <h2 class="text-3xl text-white text-center font-bold m-0">Charts</h2>
+            <div class="flex flex-col justify-center items-center mt-4 space-y-4">
+                <select name="charts" id="charts" class="bg-th-background text-white" onchange="loadCharts(this)">
+                    <option selected>-</option>
+                    <option value="1">Time apps usage</option>
+                    <option value="2">Day apps usage</option>
+                    <option value="3">Events captured</option>
+                </select>
+                <div id="chart" class="text-white min-w-[500px] justify-center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+    var chart = null;
+    function loadCharts(objectSelected){
+        var value = objectSelected.value;
+        if(value==="3"){
+            var options = {
+              chart: {
+                type: 'bar',
+                foreColor: '#ffffff',
+              },
+              tooltip:{
+                theme: 'dark',
+              },
+              series: [{
+                name: 'sales',
+                data: [30,40,35,50,49,60,70,91,125]
+              }],
+              xaxis: {
+                categories: [1991,1992,1993,1994,1995,1996,1997, 1998,1999]
+              }
+            }
+        }if(value==="2"){
+            var options = {
+              chart: {
+                  zoom: {
+                      enabled: true
+                  },
+                type: 'line',
+                foreColor: '#ffffff',
+              },
+                tooltip:{
+                theme: 'dark',
+              },
+              series: [{
+                name: 'sales',
+                data: [30,40,35,50,49,60,70,91,125,40,35,50,49,60,70,91,125,40,35,50,49,60,70,
+                        91,125,40,35,50,49,60,70,91,125,40,35,50,39,70,91,125,40,35,32,22]
+              }],
+              xaxis: {
+                tickPlacement: 'on',
+                categories: ["7:00","7:30","8:00","8:30","9:00","9:30","10:00","10:30",
+                            "11:00","11:30","12:00","12:30","13:00","13:30","14:00",
+                            "15:00","15:30","16:00","16:30","17:00","17:30","18:00",
+                            "18:30","19:00","19:30","20:00","20:30","21:00","21:30",
+                            "22:00","22:30","23:00","23:30","1:00","1:30","2:00",
+                            "3:00","3:30","4:00","4:30","5:00","5:30","6:00","6:30"]
+              }
+            }
+
+        }if(value==="1"){
+            var options = {
+              chart: {
+                type: 'donut',
+                foreColor: '#ffffff'
+              },
+                tooltip:{
+                theme: 'dark',
+              },
+                series: [44, 55, 41, 17, 15],
+                chartOptions: {
+                  labels: ['Apple', 'Mango', 'Orange', 'Watermelon']
+                }
+            }
+        }
+    if(chart){
+        chart.destroy();
+    }
+    chart = new ApexCharts(document.querySelector("#chart"), options);
+    chart.render();
+    if(value=="2"){
+        //made default zoom on chart to the time 7:00 to 17:00
+        chart.zoomX(7, 21);
+    }
+    }
+
+    </script>
+{% endblock %}
