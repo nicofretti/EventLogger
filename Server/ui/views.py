@@ -2,7 +2,7 @@ import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 import api.models as models
@@ -86,8 +86,34 @@ def events(request, pk):
 @login_required(login_url='login/')
 def charts(request, pk):
     logger = models.LoggerKey.objects.get(id=pk)
-    print("fuck you")
-    return render(request, 'charts.html', {"logger":logger})
+    # start is in datetime-local format YYYY-MM-DDThh:mm
+    start = datetime.datetime.now().strftime("%Y-%m-%d")
+    context = {
+        'logger': logger,
+        'start': "2022-01-09"
+    }
+    return render(request, 'charts.html', context)
+
+@login_required(login_url='login/')
+def chart_ajax(request, pk):
+    logger = models.LoggerKey.objects.get(id=pk)
+    start = request.GET.get('start')
+    end = request.GET.get('end')
+    chart = request.GET.get('chart')
+    if chart == '1':
+        print("Chart 1")
+        processes = models.Event.objects.filter(logger_key=logger.id, timestamp__gte=start)
+        for list in processes:
+            print(list.processes)
+    if chart == '2':
+        print("Chart 2")
+    if chart == '3':
+        print("Chart 3")
+        # Events captured
+        # events = models.Event.objects.filter(logger_key=pk, timestamp__gte=start).order_by('timestamp')
+        # for event in events:
+        #     print(events)
+    return JsonResponse({"data": "test"})
 
 # Useful methods
 

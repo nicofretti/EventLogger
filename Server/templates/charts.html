@@ -17,18 +17,18 @@
 {% endblock %}
 
 {% block content %}
-    <div onload="loadCharts()" class="grid grid-cols-4 gap-4 mt-4">
+    <div class="grid grid-cols-4 gap-4 mt-4">
         <!-- Action bar -->
         <div class="flex flex-col bg-th-card rounded text-white space-y-4 p-4">
             <a class="flex space-x-1 p-1 border border-th-card rounded
                 hover:border hover:border-white"
-                href="{% url 'homepage' %}">
+               href="{% url 'homepage' %}">
                 <i class="material-icons">keyboard_arrow_left</i>
                 <span>Back</span>
             </a>
             <a class="flex space-x-1 p-1 border border-th-card rounded
                 hover:border hover:border-white"
-                href="{% url 'events' logger.id %}">
+               href="{% url 'events' logger.id %}">
                 <i class="material-icons">event_note</i>
                 <span>Events</span>
             </a>
@@ -38,7 +38,7 @@
             </a>
             <a class="flex space-x-1 p-1 border border-th-card rounded
                 hover:border hover:border-white"
-                href="{% url 'settings' logger.id %}">
+               href="{% url 'settings' logger.id %}">
                 <i class="material-icons">settings_applications</i>
                 <span>Settings</span>
             </a>
@@ -46,13 +46,23 @@
         <div class="col-span-3 flex flex-col justify-start">
             <h2 class="text-3xl text-white text-center font-bold m-0">Charts</h2>
             <div class="flex flex-col justify-center items-center mt-4 space-y-4">
-                <select name="charts" id="charts" class="bg-th-background text-white" onchange="loadCharts(this)">
-                    <option selected>-</option>
-                    <option value="1">Time apps usage</option>
-                    <option value="2">Day apps usage</option>
-                    <option value="3">Events captured</option>
-                </select>
-                <div id="chart" class="text-white min-w-[500px] justify-center"></div>
+
+                <form id="form">
+                    <select name="chart" id="chart" class="bg-th-background text-white">
+                        <option selected>-</option>
+                        <option value="1">Total usage for each app</option>
+                        <option value="2">Total events per day</option>
+                        <option value="3">Events captured</option>
+                    </select>
+                </form>
+                <div class="flex flex-col justify-center min-w-[500px]">
+                    <div class="flex justify-center space-x-4">
+                        <input id="start" value="{{ start }}" class="rounded" type="date"/>
+                        <input id="end" value="{{ end }}" class="rounded" type="date"/>
+                    </div>
+                    <div class="mt-4" id="chart_view"></div>
+                </div>
+
             </div>
 
         </div>
@@ -60,79 +70,164 @@
     </div>
 
     <script>
-    var chart = null;
-    function loadCharts(objectSelected){
-        var value = objectSelected.value;
-        if(value==="3"){
-            var options = {
-              chart: {
-                type: 'bar',
-                foreColor: '#ffffff',
-              },
-              tooltip:{
-                theme: 'dark',
-              },
-              series: [{
-                name: 'sales',
-                data: [30,40,35,50,49,60,70,91,125]
-              }],
-              xaxis: {
-                categories: [1991,1992,1993,1994,1995,1996,1997, 1998,1999]
-              }
+        var chart = null;
+        $("#chart").change(
+            function () {
+                var chart_type = $("#chart").val();
+                var start = $("#start").val();
+                var end = $("#end").val();
+                $.get("{% url 'chart_ajax' logger.id %}", {chart: chart_type, start: start, end: end}
+                ).done(function (data) {
+                    console.log("olles")
+                    drawGraph(chart_type);
+                });
             }
-        }if(value==="2"){
-            var options = {
-              chart: {
-                  zoom: {
-                      enabled: true
-                  },
-                type: 'line',
-                foreColor: '#ffffff',
-              },
-                tooltip:{
-                theme: 'dark',
-              },
-              series: [{
-                name: 'sales',
-                data: [30,40,35,50,49,60,70,91,125,40,35,50,49,60,70,91,125,40,35,50,49,60,70,
-                        91,125,40,35,50,49,60,70,91,125,40,35,50,39,70,91,125,40,35,32,22]
-              }],
-              xaxis: {
-                tickPlacement: 'on',
-                categories: ["7:00","7:30","8:00","8:30","9:00","9:30","10:00","10:30",
-                            "11:00","11:30","12:00","12:30","13:00","13:30","14:00",
-                            "15:00","15:30","16:00","16:30","17:00","17:30","18:00",
-                            "18:30","19:00","19:30","20:00","20:30","21:00","21:30",
-                            "22:00","22:30","23:00","23:30","1:00","1:30","2:00",
-                            "3:00","3:30","4:00","4:30","5:00","5:30","6:00","6:30"]
-              }
-            }
+        )
 
-        }if(value==="1"){
+    </script>
+    <script>
+        var chart = null;
+
+        function drawGraph(type) {
             var options = {
-              chart: {
-                type: 'donut',
-                foreColor: '#ffffff'
-              },
+                chart: {
+                    foreColor: '#ffffff',
+                },
                 tooltip:{
-                theme: 'dark',
-              },
-                series: [44, 55, 41, 17, 15],
-                chartOptions: {
-                  labels: ['Apple', 'Mango', 'Orange', 'Watermelon']
+                    theme: 'dark',
                 }
             }
+            if (chart) {
+                // destroy old chart
+                chart.destroy();
+            }
+            if (type === "1") {
+                options.chart.type = "bar";
+                options.series = [{
+                    name: 'sales',
+                    data: [30,40,35,50,49,60,70,91,125]
+                }];
+                options.xaxis = {
+                    categories: [1991,1992,1993,1994,1995,1996,1997, 1998,1999]
+                }
+                chart = new ApexCharts(document.querySelector("#chart_view"), options);
+                chart.render();
+            }
+            if (type === "2") {
+                options.chart.type = "area";
+                options.chart.zoom = {
+                    enabled: true
+                }
+                options.series = [{
+                    name: 'sales',
+                    data: [30,40,35,50,49,60,70,91,125,40,35,50,49,60,70,91,125,40,35,50,49,60,70,
+                            91,125,40,35,50,49,60,70,91,125,40,35,50,39,70,91,125,40,35,32,22]
+                }];
+                options.xaxis = {
+                    tickPlacement: 'on',
+                    categories: ["7:00", "7:30", "8:00", "8:30", "9:00", "9:30", "10:00", "10:30",
+                            "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00",
+                            "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00",
+                            "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30",
+                            "22:00", "22:30", "23:00", "23:30", "1:00", "1:30", "2:00",
+                            "3:00", "3:30", "4:00", "4:30", "5:00", "5:30", "6:00", "6:30"]
+                }
+                chart = new ApexCharts(document.querySelector("#chart_view"), options);
+                chart.render();
+                chart.zoomX(7, 13);
+            }
+            if (type === "3") {
+                console.log("Graph - 3")
+                var options = {
+          series: [
+          {
+            data: [
+              {
+                x: 'Analysis',
+                y: [
+                  new Date('2019-02-27').getTime(),
+                  new Date('2019-03-04').getTime()
+                ],
+                fillColor: '#008FFB'
+              },
+              {
+                x: 'Design',
+                y: [
+                  new Date('2019-03-04').getTime(),
+                  new Date('2019-03-08').getTime()
+                ],
+                fillColor: '#00E396'
+              },
+              {
+                x: 'Coding',
+                y: [
+                  new Date('2019-03-07').getTime(),
+                  new Date('2019-03-10').getTime()
+                ],
+                fillColor: '#775DD0'
+              },
+              {
+                x: 'Testing',
+                y: [
+                  new Date('2019-03-08').getTime(),
+                  new Date('2019-03-12').getTime()
+                ],
+                fillColor: '#FEB019'
+              },
+              {
+                x: 'Deployment',
+                y: [
+                  new Date('2019-03-12').getTime(),
+                  new Date('2019-03-17').getTime()
+                ],
+                fillColor: '#FF4560'
+              }
+            ]
+          }
+        ],
+          chart: {
+          height: 350,
+          type: 'rangeBar'
+        },
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            distributed: true,
+            dataLabels: {
+              hideOverflowingLabels: false
+            }
+          }
+        },
+        dataLabels: {
+          enabled: true,
+          formatter: function(val, opts) {
+            var label = opts.w.globals.labels[opts.dataPointIndex]
+            var a = moment(val[0])
+            var b = moment(val[1])
+            var diff = b.diff(a, 'days')
+            return label + ': ' + diff + (diff > 1 ? ' days' : ' day')
+          },
+          style: {
+            colors: ['#f3f4f5', '#fff']
+          }
+        },
+        xaxis: {
+          type: 'datetime'
+        },
+        yaxis: {
+          show: false
+        },
+        grid: {
+          row: {
+            colors: ['#f3f4f5', '#fff'],
+            opacity: 1
+          }
         }
-    if(chart){
-        chart.destroy();
-    }
-    chart = new ApexCharts(document.querySelector("#chart"), options);
-    chart.render();
-    if(value=="2"){
-        //made default zoom on chart to the time 7:00 to 17:00
-        chart.zoomX(7, 21);
-    }
-    }
+        };
 
+                chart = new ApexCharts(document.querySelector("#chart_view"), options);
+                chart.render();
+            }
+        }
     </script>
 {% endblock %}
