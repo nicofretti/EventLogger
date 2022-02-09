@@ -31,6 +31,7 @@ def logout(request):
         auth_logout(request)
     return redirect('login')
 
+
 @login_required(login_url='login/')
 def settings(request, pk):
     logger = models.LoggerKey.objects.get(id=pk)
@@ -40,6 +41,7 @@ def settings(request, pk):
         'settings': settings
     }
     return render(request, 'settings.html', context)
+
 
 @login_required(login_url='login/')
 def homepage(request):
@@ -83,6 +85,7 @@ def events(request, pk):
 
     return render(request, 'events.html', context)
 
+
 @login_required(login_url='login/')
 def charts(request, pk):
     logger = models.LoggerKey.objects.get(id=pk)
@@ -94,26 +97,98 @@ def charts(request, pk):
     }
     return render(request, 'charts.html', context)
 
+
 @login_required(login_url='login/')
 def chart_ajax(request, pk):
     logger = models.LoggerKey.objects.get(id=pk)
     start = request.GET.get('start')
+    if (start):
+        start = datetime.datetime.strptime(start, "%Y-%m-%d")
     end = request.GET.get('end')
     chart = request.GET.get('chart')
+    data = {}
+    events = models.Event.objects.filter(logger_key=logger.id, timestamp__gte=start,
+                                         timestamp__lte=start + datetime.timedelta(days=1))
     if chart == '1':
-        print("Chart 1")
-        processes = models.Event.objects.filter(logger_key=logger.id, timestamp__gte=start)
-        for list in processes:
-            print(list.processes)
+        # Total usage for each app/process
+        usage = {}
+        previous_timestamp = None  # used to calculate the time between two events format 01/09/2022 01:00:00
+        for event in events:
+            processes = json.loads(event.processes)
+            for process in processes:
+                timestamp = datetime.datetime.strptime(process['timestamp'], "%d/%m/%Y %H:%M:%S")
+                if previous_timestamp:
+                    time_diff = timestamp - previous_timestamp
+                    if time_diff.seconds <= 60:
+                        # more than one minute maybe the logger is not working
+                        for app in process['list']:
+                            if app in usage:
+                                usage[app] += time_diff.seconds
+                            else:
+                                usage[app] = time_diff.seconds
+                previous_timestamp = timestamp
+        categories = usage.keys()
+        data['categories'] = [category.capitalize() for category in categories]
+        data['series'] = [round(usage[category] / 60) + 1 for category in categories]
+
     if chart == '2':
-        print("Chart 2")
+        # Total events per day order by time
+
+        counter = {}
+        previous = start - datetime.timedelta(minutes=30)
+        max_events = -1
+        argmax = -1
+        for _ in range(48):
+            counter[start] = 0
+            subset = events.filter(timestamp__gte=previous, timestamp__lte=start)
+            for event in subset:
+                counter[start] += int(event.content.count('kbd') / 2)
+                counter[start] += event.content.count('class')
+                if counter[start] > max_events:
+                    max_events = counter[start]
+                    argmax = start
+            previous = start
+            start += datetime.timedelta(minutes=30)
+        data['categories'] = [start.strftime("%H:%M") for start in counter.keys()]
+        data['series'] = [counter[start] for start in counter.keys()]
+        data['zoom'] = [(list(counter.keys()).index(argmax) - 3) % 48, (list(counter.keys()).index(argmax) + 3) % 48]
+
     if chart == '3':
-        print("Chart 3")
-        # Events captured
-        # events = models.Event.objects.filter(logger_key=pk, timestamp__gte=start).order_by('timestamp')
-        # for event in events:
-        #     print(events)
-    return JsonResponse({"data": "test"})
+        # App usage per day order by time
+        apps = {}  # {app:  [[time1,time3],[time2,time4]...]} final result
+        last_interval = {}  # {app: [start,stop]} used to calculate the time between two events of the same app
+        for event in events:
+            processes = json.loads(event.processes)
+            for process in processes:
+                timestamp = datetime.datetime.strptime(process['timestamp'], "%d/%m/%Y %H:%M:%S")
+                for app in process['list']:
+                    if app in apps:
+                        time_diff = timestamp - last_interval[app][1]
+                        if time_diff.seconds > 60 * 5:
+                            # different time interval
+                            apps[app].append(last_interval[app])
+                            last_interval[app] = [timestamp, timestamp]
+                        else:
+                            # update last timestamp
+                            last_interval[app][1] = timestamp
+                    else:
+                        # add app in apps dict
+                        apps[app] = []
+                        # todo: better 30 seconds
+                        last_interval[app] = [timestamp, timestamp + datetime.timedelta(seconds=30)]
+        # attach the last interval
+        for app in last_interval:
+            if last_interval[app][1] != last_interval[app][0]:
+                apps[app].append(last_interval[app])
+        data = {'list': []}
+        for app in apps:
+            random.shuffle(rainbow_colors)
+            color = rainbow_colors[random.randint(0, len(rainbow_colors) - 1)]
+            appname = app.capitalize()
+            for interval in apps[app]:
+                data['list'].append({'x': appname, 'y': interval, 'fillColor': color})
+    return JsonResponse(data)
+
 
 # Useful methods
 
@@ -137,8 +212,10 @@ def get_processes_to_string(processes, assigned_colors):
     return processes_custom, assigned_colors
 
 
-rainbow_colors = [
-    '#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#800080', '#808080', '#a52a2a', '#ffc0cb', '#00ffff',
-    '#ff00ff', '#dc143c', '#4b0082', '#00ff00', '#808000', '#008080', '#000080', '#800000', '#c0c0c0', '#32cd32',
-    '#ffd700', '#fa8072 '
-]
+rainbow_colors = ["#008FFB", "#00E396", "#FEB019", "#FF4560", "#775DD0", "#FFFF00", "#FF00FF", "#00FFFF" , "#FFC0CB", "#C0C0C0"]
+
+# rainbow_colors = [
+#    '#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#800080', '#808080', '#a52a2a', '#ffc0cb', '#00ffff',
+#    '#ff00ff', '#dc143c', '#4b0082', '#00ff00', '#808000', '#008080', '#000080', '#800000', '#c0c0c0', '#32cd32',
+#    '#ffd700', '#fa8072 '
+# ]
