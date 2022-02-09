@@ -46,7 +46,27 @@
         </div>
         <div class="col-span-3 flex flex-col justify-start">
             <h2 class="text-3xl text-white text-center font-bold m-0">Settings</h2>
-            <form class="flex flex-col justify-center items-center mt-4 text-white">
+            {% if success %}
+                <div class="flex mx-auto mt-4 min-w-[300px] justify-between border border-green-400 text-green-700 rounded p-2" role="alert">
+                    <div>
+                        <strong class="font-bold">Success: </strong>
+                        <span class="block sm:inline">{{ success }}</span>
+                    </div>
+                    <!--Icon that redirect the page to login-->
+                    <a class="material-icons" href="./">close</a>
+                </div>
+            {% endif %}
+            {% if error %}
+                    <div class="flex mx-auto mt-4 min-w-[300px] justify-between border border-red-400 text-red-700 rounded p-2" role="alert">
+                        <div>
+                            <strong class="font-bold">Error: </strong>
+                            <span class="block sm:inline">{{ error }}</span>
+                        </div>
+                        <!--Icon that redirect the page to login-->
+                        <a class="material-icons" href="./">close</a>
+                    </div>
+                {% endif %}
+            <form method="post" class="flex flex-col justify-center items-center mt-4 text-white">
                 {% csrf_token %}
                 <table class="text-white">
 
@@ -116,6 +136,14 @@
                         </tr>
                     </tbody>
                 </table>
+            <div class="mt-4 flex justify-between space-x-4">
+                <a href="." class="p-1 w-32 text-center rounded border border-white hover:bg-gray-700">
+                    Annulla
+                </a>
+                <button action="submit" class="p-1 w-32 text-center rounded border border-white hover:bg-yellow-700">
+                    Salva
+                </button>
+            </div>
             </form>
         </div>
     </div>

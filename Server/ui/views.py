@@ -36,10 +36,22 @@ def logout(request):
 def settings(request, pk):
     logger = models.LoggerKey.objects.get(id=pk)
     settings = json.loads(logger.settings)
-    context = {
-        'logger': logger,
-        'settings': settings
-    }
+    context = {}
+    if request.method == "POST":
+        try:
+            settings = {
+                'LOG_PROCESS_ON_DOUBLE_CLICK': bool(request.POST.get('LOG_PROCESS_ON_DOUBLE_CLICK')),
+                'LOG_KEYBOARD_EVENTS': bool(request.POST.get('LOG_KEYBOARD_EVENTS')),
+                'LOG_MOUSE_EVENTS': bool(request.POST.get('LOG_MOUSE_EVENTS')),
+                'SECONDS_API_INVOKE': int(request.POST.get('SECONDS_API_INVOKE'))
+            }
+            logger.settings = json.dumps(settings)
+            logger.save()
+            context['success'] = "Settings saved"
+        except:
+            context['error'] = "Error saving settings"
+    context['logger'] = logger
+    context['settings'] = settings
     return render(request, 'settings.html', context)
 
 
@@ -61,15 +73,15 @@ def events(request, pk):
     if request.GET.get('start') and request.GET.get('end'):
         start = request.GET.get('start')
         end = request.GET.get('end')
-        events = models.Event.objects.filter(logger_key=pk, timestamp__gte=start, timestamp__lte=end)
+        events = models.Event.objects.filter(logger_key=pk, timestamp__gte=start, timestamp__lte=end).order_by("-id")
         context['start'] = start
         context['end'] = end
     else:
-        events = models.Event.objects.filter(logger_key=pk)
+        events = models.Event.objects.filter(logger_key=pk).order_by("-id")
 
     if request.GET.get('q'):
         q = request.GET.get('q')
-        events = events.filter(content__contains=request.GET.get('q'))
+        events = events.filter(content__contains=request.GET.get('q')).order_by("-id")
         context['q'] = q
     assigned_colors = {}
     custom_events = []
