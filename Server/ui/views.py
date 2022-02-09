@@ -58,6 +58,8 @@ def settings(request, pk):
 @login_required(login_url='login/')
 def homepage(request):
     loggers = models.LoggerKey.objects.all()
+    if(request.GET.get('q')):
+        loggers = loggers.filter(username__contains=request.GET.get('q'))
     for logger in loggers:
         if (models.Event.objects.filter(logger_key=logger.id).exists()):
             logger.last_event = models.Event.objects.filter(logger_key=logger.id).latest('timestamp').timestamp
@@ -98,6 +100,7 @@ def events(request, pk):
     context['logger'] = models.LoggerKey.objects.get(id=pk)
 
     return render(request, 'events.html', context)
+
 
 @login_required(login_url='login/')
 def charts(request, pk):
@@ -200,7 +203,7 @@ def chart_ajax(request, pk):
             if len(colors):
                 color = colors.pop()
             else:
-                color = "#"+''.join([random.choice('ABCDEF0123456789') for i in range(6)])
+                color = "#" + ''.join([random.choice('ABCDEF0123456789') for i in range(6)])
             appname = app.capitalize()
             for interval in apps[app]:
                 data['list'].append({'x': appname, 'y': interval, 'fillColor': color})
@@ -217,10 +220,10 @@ def get_processes_to_string(processes, assigned_colors, colors):
             if (p in assigned_colors):
                 color = assigned_colors[p]
             else:
-                if(len(colors)):
+                if (len(colors)):
                     color = colors.pop()
                 else:
-                    color = "#"+''.join([random.choice('ABCDEF0123456789') for i in range(6)])
+                    color = "#" + ''.join([random.choice('ABCDEF0123456789') for i in range(6)])
                 assigned_colors[p] = color
             list_processes += """<span class='process'><span style='color:{}'>●</span>{}</span> """.format(color, p)
         obj['timestamp'] = datetime.datetime \
@@ -231,12 +234,12 @@ def get_processes_to_string(processes, assigned_colors, colors):
     return processes_custom, assigned_colors
 
 
-#rainbow_colors = ["#008FFB", "#00E396", "#FEB019", "#FF4560",
+# rainbow_colors = ["#008FFB", "#00E396", "#FEB019", "#FF4560",
 #                  "#fbbf24", "#22c55e", "#a855f7",
 #                  "#a21caf"]
 
 rainbow_colors = [
-   '#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#800080', '#808080', '#a52a2a', '#ffc0cb', '#00ffff',
-   '#ff00ff', '#dc143c', '#4b0082', '#00ff00', '#808000', '#008080', '#000080', '#800000', '#c0c0c0', '#32cd32',
-   '#ffd700', '#fa8072 '
+    '#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#800080', '#808080', '#a52a2a', '#ffc0cb', '#00ffff',
+    '#ff00ff', '#dc143c', '#4b0082', '#00ff00', '#808000', '#008080', '#000080', '#800000', '#c0c0c0', '#32cd32',
+    '#ffd700', '#fa8072 '
 ]
