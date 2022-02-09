@@ -15,48 +15,112 @@
 </div>
 {% endblock %}
 {% block content %}
-<div class="flex flex-col text-white mt-4 mx-16">
-    <!-- Search bar -->
-    <form  method="GET">
-        <div class="flex space-x-4 ">
-            <input type="text" name="q" class="text-white border border-white bg-gray-900 rounded pl-2 py-1 text-black w-full mr-4" placeholder="Search by name...">
-            <button type="submit" class="material-icons text-white py-1 px-5 border border-white rounded hover:bg-blue-700">search</button>
-            <button type="submit" class="material-icons text-white py-1 px-2 border border-white rounded hover:bg-green-700">personadd</button>
+    <div class="flex flex-col text-white mt-4">
+        <!-- Search bar -->
+        <div class="flex items-center mb-4 text-white">
+            <form class="flex w-full m-0"  method="GET">
+                <input type="text" name="q" class="text-white border border-white bg-gray-900 rounded pl-2 py-1 w-full mr-4" placeholder="Search by name...">
+                <button type="submit" class="material-icons text-white py-1 px-5 border border-white rounded hover:bg-blue-700">search</button>
+            </form>
+            <button onclick="openModal()" class="ml-2 material-icons text-white py-1 px-2 border border-white rounded hover:bg-green-700">personadd</button>
         </div>
-    </form>
-    <!-- Table -->
-    <table class="border-collapse">
-        <thead class="font-xl bg-th-label text-black font-bold rounded py-2 mb-5">
-            <th class="rounded-l py-2">USERNAME</th>
-            <th>API KEY</th>
-            <th>LAST UPDATE</th>
-            <th class="rounded-r">ACTIONS</th>
-        </thead>
-        <tbody class="text-white text-center">
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td class="p-1">
-                </td>
-            </tr>
-            {% for logger in loggers %}
-               <tr>
-                <td class="py-2">{{ logger.username }}</td>
-                <td>{{ logger.key }}</td>
-                <td>{{ logger.last_event }}</td>
-                <td class="flex">
-                    <a class="flex mx-auto border p-1 border-white rounded hover:bg-th-primary"
-                       href="{% url 'events' logger.id %}">
-                        <span class="material-icons">apps</span>
-                        Open
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
 
-        </tbody>
-    </table>
-</div>
+        <!-- Table -->
+        <table class="border-collapse">
+            <thead class="font-xl bg-th-label text-black font-bold rounded py-2 mb-5">
+                <th class="rounded-l py-2">LOGGER NAME</th>
+                <th>API KEY</th>
+                <th>LAST UPDATE</th>
+                <th class="rounded-r">ACTIONS</th>
+            </thead>
+            <tbody class="text-white text-center">
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="p-1">
+                    </td>
+                </tr>
+                {% for logger in loggers %}
+                   <tr>
+                    <td class="py-2">{{ logger.username }}</td>
+                    <td>{{ logger.key }}</td>
+                    <td>{{ logger.last_event }}</td>
+                    <td class="flex">
+                        <a class="flex mx-auto border p-1 border-white rounded hover:bg-th-primary"
+                           href="{% url 'events' logger.id %}">
+                            <span class="material-icons">apps</span>
+                            Open
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
 
+            </tbody>
+        </table>
+    </div>
+
+    {% block modal %}
+        <div class="modal-container text-white" id="modal">
+            <div class="modal bg-th-card p-4 rounded">
+                <header class="flex justify-between">
+                    <h2 class="text-2xl font-bold">Create new logger</h2>
+                    <button class="modal-close" onClick="closeModal()">
+                        <span class="material-icons">close</span>
+                    </button>
+                </header>
+                <section>
+                    <div class="flex flex-col mt-2">
+                        <form id="create">
+                            <div class="mt-2">
+                                <label class="block text-sm font-bold">Logger name</label>
+                                <input class="bg-white text-black rounded p-2 w-full" type="text" name="username" id="username">
+                            </div>
+                            <div class="mt-2">
+                                <label class="block text-sm font-bold">Api key</label>
+                                <div class="flex">
+                                    <input class="bg-white text-black rounded p-2 w-full mr-2" type="text" name="key" id="key">
+                                    <button type="button" class="border border-white rounded p-2 hover:bg-green-700 text-xs">
+                                        Random
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+                <footer class="flex justify-center mt-2 space-x-1">
+                    <button onclick="closeModal()" class="border border-white rounded p-2 hover:bg-yellow-700">Close</button>
+                    <button class="border border-white rounded p-2 hover:bg-th-primary">Add</button>
+                </footer>
+            </div>
+        </div>
+    {% endblock %}
+    <script>
+        function closeModal(){
+            document.getElementById('modal').style.display = "none";
+        }
+        function openModal(){
+            document.getElementById('modal').style.display = "block";
+        }
+    </script>
+    <style>
+        .modal-container{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            background-color: rgba(0,0,0,0.9);
+            z-index: 1;
+        }
+        .modal{
+            position: absolute;
+            min-width: 350px;
+            top: 50%;
+            left: 50%;
+            padding: 20px 40px 20px;
+            transform: translate(-50%, -50%);
+        }
+    </style>
 {%  endblock %}
