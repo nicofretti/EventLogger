@@ -70,6 +70,8 @@ def homepage(request):
 def events(request, pk):
     # if request has start and end date filter events
     context = {}
+    colors = rainbow_colors.copy()
+    random.shuffle(colors)
     if request.GET.get('start') and request.GET.get('end'):
         start = request.GET.get('start')
         end = request.GET.get('end')
@@ -87,7 +89,7 @@ def events(request, pk):
     custom_events = []
     for event in events:
         processes = json.loads(event.processes)
-        processes_string, assigned_colors = get_processes_to_string(processes, assigned_colors)
+        processes_string, assigned_colors = get_processes_to_string(processes, assigned_colors, colors)
         event.processes = processes_string
         custom_events.append(event)
     paginator = Paginator(custom_events, 15)
@@ -97,7 +99,6 @@ def events(request, pk):
 
     return render(request, 'events.html', context)
 
-
 @login_required(login_url='login/')
 def charts(request, pk):
     logger = models.LoggerKey.objects.get(id=pk)
@@ -105,7 +106,7 @@ def charts(request, pk):
     start = datetime.datetime.now().strftime("%Y-%m-%d")
     context = {
         'logger': logger,
-        'start': "2022-01-09"
+        'start': start
     }
     return render(request, 'charts.html', context)
 
@@ -114,14 +115,18 @@ def charts(request, pk):
 def chart_ajax(request, pk):
     logger = models.LoggerKey.objects.get(id=pk)
     start = request.GET.get('start')
-    if (start):
-        start = datetime.datetime.strptime(start, "%Y-%m-%d")
-    end = request.GET.get('end')
     chart = request.GET.get('chart')
     data = {}
+    colors = rainbow_colors.copy()
+    random.shuffle(colors)
+    if (start):
+        start = datetime.datetime.strptime(start, "%Y-%m-%d")
+
     events = models.Event.objects.filter(logger_key=logger.id, timestamp__gte=start,
                                          timestamp__lte=start + datetime.timedelta(days=1))
-    if chart == '1':
+    if len(events) == 0:
+        return JsonResponse({})
+    elif chart == '1':
         # Total usage for each app/process
         usage = {}
         previous_timestamp = None  # used to calculate the time between two events format 01/09/2022 01:00:00
@@ -142,8 +147,7 @@ def chart_ajax(request, pk):
         categories = usage.keys()
         data['categories'] = [category.capitalize() for category in categories]
         data['series'] = [round(usage[category] / 60) + 1 for category in categories]
-
-    if chart == '2':
+    elif chart == '2':
         # Total events per day order by time
 
         counter = {}
@@ -164,8 +168,7 @@ def chart_ajax(request, pk):
         data['categories'] = [start.strftime("%H:%M") for start in counter.keys()]
         data['series'] = [counter[start] for start in counter.keys()]
         data['zoom'] = [(list(counter.keys()).index(argmax) - 3) % 48, (list(counter.keys()).index(argmax) + 3) % 48]
-
-    if chart == '3':
+    elif chart == '3':
         # App usage per day order by time
         apps = {}  # {app:  [[time1,time3],[time2,time4]...]} final result
         last_interval = {}  # {app: [start,stop]} used to calculate the time between two events of the same app
@@ -194,17 +197,19 @@ def chart_ajax(request, pk):
                 apps[app].append(last_interval[app])
         data = {'list': []}
         for app in apps:
-            random.shuffle(rainbow_colors)
-            color = rainbow_colors[random.randint(0, len(rainbow_colors) - 1)]
+            if len(colors):
+                color = colors.pop()
+            else:
+                color = "#"+''.join([random.choice('ABCDEF0123456789') for i in range(6)])
             appname = app.capitalize()
             for interval in apps[app]:
                 data['list'].append({'x': appname, 'y': interval, 'fillColor': color})
+
     return JsonResponse(data)
 
 
 # Useful methods
-
-def get_processes_to_string(processes, assigned_colors):
+def get_processes_to_string(processes, assigned_colors, colors):
     processes_custom = []
     for obj in processes:
         list_processes = ""
@@ -212,8 +217,10 @@ def get_processes_to_string(processes, assigned_colors):
             if (p in assigned_colors):
                 color = assigned_colors[p]
             else:
-                random.shuffle(rainbow_colors)
-                color = rainbow_colors[random.randint(0, len(rainbow_colors) - 1)]
+                if(len(colors)):
+                    color = colors.pop()
+                else:
+                    color = "#"+''.join([random.choice('ABCDEF0123456789') for i in range(6)])
                 assigned_colors[p] = color
             list_processes += """<span class='process'><span style='color:{}'>●</span>{}</span> """.format(color, p)
         obj['timestamp'] = datetime.datetime \
@@ -224,10 +231,12 @@ def get_processes_to_string(processes, assigned_colors):
     return processes_custom, assigned_colors
 
 
-rainbow_colors = ["#008FFB", "#00E396", "#FEB019", "#FF4560", "#775DD0", "#FFFF00", "#FF00FF", "#00FFFF" , "#FFC0CB", "#C0C0C0"]
+#rainbow_colors = ["#008FFB", "#00E396", "#FEB019", "#FF4560",
+#                  "#fbbf24", "#22c55e", "#a855f7",
+#                  "#a21caf"]
 
-# rainbow_colors = [
-#    '#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#800080', '#808080', '#a52a2a', '#ffc0cb', '#00ffff',
-#    '#ff00ff', '#dc143c', '#4b0082', '#00ff00', '#808000', '#008080', '#000080', '#800000', '#c0c0c0', '#32cd32',
-#    '#ffd700', '#fa8072 '
-# ]
+rainbow_colors = [
+   '#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#800080', '#808080', '#a52a2a', '#ffc0cb', '#00ffff',
+   '#ff00ff', '#dc143c', '#4b0082', '#00ff00', '#808000', '#008080', '#000080', '#800000', '#c0c0c0', '#32cd32',
+   '#ffd700', '#fa8072 '
+]

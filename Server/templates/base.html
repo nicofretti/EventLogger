@@ -13,12 +13,13 @@
         {% endblock %}
     </title>
 </head>
-<body class="bg-th-background md:mx-32 min-w-[600px] mt-2">
+<body class="bg-th-background md:mx-16 min-w-[600px] mt-2">
+
     <main>
-        {% block header %}
-        {% endblock %}
-        {% block content %}
-        {% endblock %}
+        {% block header %}{% endblock %}
+        <div class="md:mx-32">
+            {% block content %}{% endblock %}
+        </div>
     </main>
 </body>
 </html>

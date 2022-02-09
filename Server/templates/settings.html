@@ -83,7 +83,8 @@
                                 <select id="LOG_PROCESS_ON_DOUBLE_CLICK"
                                     name="LOG_PROCESS_ON_DOUBLE_CLICK"
                                     class="bg-th-card w-full text-white border border-th-card rounded">
-                                    {% if logger.settings.LOG_PROCESS_ON_DOUBLE_CLICK %}
+
+                                    {% if settings.LOG_PROCESS_ON_DOUBLE_CLICK %}
                                         <option value="True" selected="selected">True</option>
                                         <option value="False">False</option>
                                     {% else %}
@@ -99,7 +100,7 @@
                                 <select id="LOG_KEYBOARD_EVENTS"
                                         name="LOG_KEYBOARD_EVENTS"
                                         class="bg-th-card w-full text-white border border-th-card rounded">
-                                    {% if logger.settings.LOG_KEYBOARD_EVENTS %}
+                                    {% if settings.LOG_KEYBOARD_EVENTS %}
                                         <option value="True" selected="selected">True</option>
                                         <option value="False">False</option>
                                     {% else %}

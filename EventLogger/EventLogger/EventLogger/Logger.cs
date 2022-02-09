@@ -118,7 +118,7 @@ public class Logger
             using (var client = new HttpClient())
             {
                 var rBody = "{\"content\":\"" + body + "\",\"key\":\"" + Constants.API_KEY + "\"}";
-                Console.WriteLine(rBody);
+                //Console.WriteLine(rBody);
                 response = client.PostAsync(
                     Constants.API_URL,
                     new StringContent(rBody,
@@ -137,7 +137,7 @@ public class Logger
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            //Console.WriteLine(ex.Message);
             _line = body; //keeping log file
         }
     }
