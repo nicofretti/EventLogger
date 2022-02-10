@@ -18,7 +18,7 @@ public class Constants
     public const String API_KEY = "VR4YJ5LR6K";
     public static String[] BANNED_PROCESS = {"TextInputHost", "ApplicationFrameHost", "SystemSettings"};
     public int MAX_CONT_EVENTS = 4098;
-    public int SECONDS_API_INVOKE = 10;
+    public int SECONDS_API_INVOKE = 60;
     public bool LOG_PROCESS_ON_DOUBLE_CLICK = true; // to log process on double click otherwise only on api call
     public bool LOG_MOUSE_EVENTS = true;
     public bool LOG_KEYBOARD_EVENTS = true;
