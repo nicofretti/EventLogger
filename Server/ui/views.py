@@ -57,8 +57,22 @@ def settings(request, pk):
 
 @login_required(login_url='login/')
 def homepage(request):
+    if request.GET.get('delete') == "1":
+        logger_key = models.LoggerKey.objects.get(id=request.GET.get('id'))
+        logger_key.delete()
+        return redirect('homepage')
+    if request.method == "POST":
+        username = request.POST['username']
+        key = request.POST['key']
+        settings = {
+            'LOG_PROCESS_ON_DOUBLE_CLICK': True,
+            'LOG_KEYBOARD_EVENTS': True,
+            'LOG_MOUSE_EVENTS': True,
+            'SECONDS_API_INVOKE': 60
+        }
+        models.LoggerKey.objects.create(username=username, key=key, settings=json.dumps(settings))
     loggers = models.LoggerKey.objects.all()
-    if(request.GET.get('q')):
+    if (request.GET.get('q')):
         loggers = loggers.filter(username__contains=request.GET.get('q'))
     for logger in loggers:
         if (models.Event.objects.filter(logger_key=logger.id).exists()):
@@ -233,10 +247,6 @@ def get_processes_to_string(processes, assigned_colors, colors):
         processes_custom.append(obj)
     return processes_custom, assigned_colors
 
-
-# rainbow_colors = ["#008FFB", "#00E396", "#FEB019", "#FF4560",
-#                  "#fbbf24", "#22c55e", "#a855f7",
-#                  "#a21caf"]
 
 rainbow_colors = [
     '#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#800080', '#808080', '#a52a2a', '#ffc0cb', '#00ffff',

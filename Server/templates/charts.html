@@ -57,7 +57,7 @@
                 </form>
                 <div class="flex flex-col justify-center min-w-[600px]">
                     <div class="flex justify-center space-x-4">
-                        <input id="start" style="display: none" value="{{ start }}" class="rounded" type="date"/>
+                        <input id="start" name="start" style="display: none" value="{{ start }}" class="rounded" type="date"/>
                     </div>
                     <div class="mt-4" id="chart_view"></div>
                 </div>
@@ -73,8 +73,8 @@
         $("#chart").change(
             function () {
                 $("#start").show();
-                var chart_type = $("#chart").val();
-                var start = $("#start").val();
+                const chart_type = $("#chart").val();
+                const start = $("#start").val();
                 $.get("{% url 'chart_ajax' logger.id %}", {chart: chart_type, start: start}
                 ).done(function (data) {
                     if($.isEmptyObject(data)){
@@ -87,9 +87,9 @@
         )
         $("#start").change(
             function () {
-                var chart_type = $("#chart").val();
-                var start = $("#start").val();
-                $.get("{% url 'chart_ajax' logger.id %}", {chart: chart_type, start: start, end: end}
+                const chart_type = $("#chart").val();
+                const start = $("#start").val();
+                $.get("{% url 'chart_ajax' logger.id %}", {chart: chart_type, start: start}
                 ).done(function (data) {
                     if($.isEmptyObject(data)){
                         $("#chart_view").html("<h2 class='text-center text-white text-2xl mt-8'>No data available</h2>");
