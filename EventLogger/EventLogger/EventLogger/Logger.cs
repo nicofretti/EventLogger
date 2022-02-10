@@ -67,6 +67,7 @@ public class Logger
             .Where(p => p.MainWindowTitle.Length > 0)
             .Select(p => p.ProcessName)
             .Distinct()
+            .Except(Constants.BANNED_PROCESS)
             .OrderBy(p=>p));
         if (forced || _processes!=newProcesses)
         {

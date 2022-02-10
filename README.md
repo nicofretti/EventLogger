@@ -12,10 +12,11 @@ TODO:
 - [x] Server setup
 - [x] Server api
 - [x] UI authentication
+- [x] UI loggers
 - [x] UI events
-- [ ] UI charts
-- [ ] UI loggers
-- [ ] Dynamic settings
+- [x] UI charts
+- [x] UI loggers
+- [x] Dynamic settings
 - [ ] Other stuff... 
 
 #### Disclaimer
