@@ -2,8 +2,10 @@
 
 The project is composed of two parts:
 - `EventLogger`: a [C#](https://docs.microsoft.com/it-it/dotnet/csharp/) script that logs mouse, keyboard and process events and sends them to 
-the command and control server.
-- `Server`: the command and control web-server written [Python 3](https://www.python.org/about/).
+  the command and control server.
+- `C&C Server`: the command and control web-server written [Python 3](https://www.python.org/about/).
+
+<img src="img/ev.svg" width=350/>
 
 ## EventLogger
 
@@ -60,15 +62,15 @@ The `UI interface` helps to manage many different `EventLogger` instances, each 
 - View some graphs of the events
 - Change the dynamic settings a specific `EventLogger` instance
 
-##### Homepage
+#### Homepage
 Here are all the `EventLogger` instances, for each one there is a link to the app where it is possible to view the events, the graphs and change the dynamic settings.
 <img src="img/image-20220210164022052.png" width=600 style="border-radius:10px"/>
 
-##### Events view
+#### Events view
 These are all the events of the `EventLogger`, the events are sorted by timestamp. It is also possible to see the processes captured in a record. 
 <img src="img/image-20220210164252330.png" width=600 style="border-radius:10px" />
 
-##### Chart view
+#### Chart view
 All charts are useful to observe the victims behavior. The charts are:
 - **Total usage for each app**: the total usage of each app.
   <img src="img/image-20220210164556184.png" width=600 style="border-radius:10px" /> 
@@ -77,7 +79,7 @@ All charts are useful to observe the victims behavior. The charts are:
 - **Timeline for each app**: the graph shows the apps' usage timeline.
   <img src="img/image-20220210164738647.png" width=600 style="border-radius:10px" />
 
-##### Dynamic settings
+#### Dynamic settings
 Here there are all the dynamic settings of the **EventLogger**. Already described in the previous section.
 <img src="img/image-20220210165107286.png" width=600 style="border-radius:10px" />
 
