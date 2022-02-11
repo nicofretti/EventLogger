@@ -122,6 +122,7 @@ media
 **/.idea/**/*.iml
 **/.idea/**/contentModel.xml
 **/.idea/**/modules.xml
+**/Pipfile  
 
 
 log.txt
