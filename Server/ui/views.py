@@ -153,8 +153,8 @@ def chart_ajax(request, pk):
                 timestamp = datetime.datetime.strptime(process['timestamp'], "%d/%m/%Y %H:%M:%S")
                 if previous_timestamp:
                     time_diff = timestamp - previous_timestamp
-                    if time_diff.seconds <= 60:
-                        # more than one minute maybe the logger is not working
+                    if time_diff.seconds <= 60*10:
+                        # more than ten minute maybe the logger is not working
                         for app in process['list']:
                             if app in usage:
                                 usage[app] += time_diff.seconds
@@ -166,7 +166,6 @@ def chart_ajax(request, pk):
         data['series'] = [round(usage[category] / 60) + 1 for category in categories]
     elif chart == '2':
         # Total events per day order by time
-
         counter = {}
         previous = start - datetime.timedelta(minutes=30)
         max_events = -1

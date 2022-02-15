@@ -149,8 +149,7 @@
                 chart.render();
                 chart.zoomX(data.zoom[0], data.zoom[1]);
             }
-            if (type === "3") {
-                console.log("Graph - 3")
+            if (type === "3" && data.list.length > 0) {
                 // convert datetime values in date
                 for (var i = 0; i < data.list.length; i++) {
                     data.list[i].y[0] = new Date(data.list[i].y[0]).getTime();
@@ -159,7 +158,7 @@
                 options.chart.type = "rangeBar";
                 options.series = [
                     {
-                        data: data.list
+                        data: data.list.length>0 ? data.list : []
                     }
                 ];
                 options.plotOptions = {
