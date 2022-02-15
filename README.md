@@ -1,8 +1,10 @@
 ### A EventLogger for Windows
 
+<img src="img/ev.svg" width=350/>
+
 Software that records some events from a Windows machine, the purpose of this project is
 to make a prototype of `keylogger` that can also log some information that can be useful to
-track user's events.
+track user's events More information about the project can be found in the [DETAILS](DETAILS.md).
 
 TODO:
 - [x] Keyboard events
