@@ -94,20 +94,20 @@ Here there are all the dynamic settings of the `EventLogger`. Already described 
 </center>
 ### Hypothetical Cyber Kill Chain attack
 
-- **Reconnaissance**: Before the attack on the victim the attacker needs to know some information about the network of the victim. For example, if the victim network isn't in the same subnet of the C&C server, the attacker have to set a public IP address for the server.
+- **Reconnaissance**: Before the attack the attacker needs to gather some information on the victim's network. For instance: if the victim's network isn't in the same subnet as the C&C server, the attacker has to set a public IP address to the server.
   
-- **Weaponization**: this project don't use any vulnerabilities to attack the victims.
+- **Weaponization**: This project doesn't use any vulnerability to attack the victims.
 
-- **Deliver**: an idea to deliver the script is using a USB stick, and then upload the script to the victim.
+- **Deliver**: An option for delivering the script to the victim is storing it on a USB stick
 
-- **Exploitation**: the script don't use any vulnerabilities to attack the victims.
+- **Exploitation**: The script don't use any vulnerability to attack the victims.
 
-- **Installation**: typically the attack is based on the physical access to the victim's machine, so the attacker have to:
-  - Plug the USB stick to the victim's machine
-  - Run the `EventLogger` script in the victim machine
-  - Add the `EventLogger` as a system service. This way the script is executed every time the victim machine is booted. After every reboot the dynamic settings are set to default values of the compiled script; They will be synchronized with the C&C server only after the first api call.
+- **Installation**: Typically the attack is based on the physical access to the victim's machine, so the attacker has to:
+  - Plug the USB stick into the victim's machine
+  - Run the `EventLogger` script in the victim's machine
+  - Register the `EventLogger` as a system service. This way the script is executed every time the victim machine is booted. After every reboot the dynamic settings are set to default values of the compiled script; They will be synchronized with the C&C server only after the first api call.
   
-- **Command and control channel**: the channel between the C&C server and the script is based on HTTP. The script periodically sends an HTTP request to the C&C server where on the body there are the events captured then C&C server sends back as response the dynamic settings.
+- **Command and control channel**: The channel between the C&C server and the script is based on HTTP. The script periodically sends an HTTP request to the C&C server. The body contains the events captured. Then the C&C server sends back the dynamic settings in the HTTP response.
   
   ###### HTTP POST send by the script
 
