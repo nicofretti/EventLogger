@@ -40,9 +40,9 @@ def settings(request, pk):
     if request.method == "POST":
         try:
             settings = {
-                'LOG_PROCESS_ON_DOUBLE_CLICK': bool(request.POST.get('LOG_PROCESS_ON_DOUBLE_CLICK')),
-                'LOG_KEYBOARD_EVENTS': bool(request.POST.get('LOG_KEYBOARD_EVENTS')),
-                'LOG_MOUSE_EVENTS': bool(request.POST.get('LOG_MOUSE_EVENTS')),
+                'LOG_PROCESS_ON_DOUBLE_CLICK': request.POST.get('LOG_PROCESS_ON_DOUBLE_CLICK') == "True",
+                'LOG_KEYBOARD_EVENTS': request.POST.get('LOG_KEYBOARD_EVENTS') == "True",
+                'LOG_MOUSE_EVENTS': request.POST.get('LOG_MOUSE_EVENTS') == "True",
                 'SECONDS_API_INVOKE': int(request.POST.get('SECONDS_API_INVOKE'))
             }
             logger.settings = json.dumps(settings)
@@ -58,6 +58,7 @@ def settings(request, pk):
 @login_required(login_url='login/')
 def homepage(request):
     if request.GET.get('delete') == "1":
+        models.Event.objects.filter(logger_key_id=request.GET.get('id')).delete()
         logger_key = models.LoggerKey.objects.get(id=request.GET.get('id'))
         logger_key.delete()
         return redirect('homepage')

